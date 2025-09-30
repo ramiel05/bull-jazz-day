@@ -42,13 +42,15 @@ When creating this spec from a user prompt:
 1. **Mark all ambiguities**: Use [NEEDS CLARIFICATION: specific question] for any assumption you'd need to make
 2. **Don't guess**: If the prompt doesn't specify something (e.g., "login system" without auth method), mark it
 3. **Think like a tester**: Every vague requirement should fail the "testable and unambiguous" checklist item
-4. **Common underspecified areas**:
+4. **Design for TDD**: Requirements must be written to support test-first development (clear inputs/outputs, observable behaviors)
+5. **Common underspecified areas**:
    - User types and permissions
-   - Data retention/deletion policies  
+   - Data retention/deletion policies
    - Performance targets and scale
    - Error handling behaviors
    - Integration requirements
    - Security/compliance needs
+   - Testable acceptance criteria
 
 ---
 
@@ -58,6 +60,7 @@ When creating this spec from a user prompt:
 [Describe the main user journey in plain language]
 
 ### Acceptance Scenarios
+*Write scenarios that can be directly converted to tests (support TDD)*
 1. **Given** [initial state], **When** [action], **Then** [expected outcome]
 2. **Given** [initial state], **When** [action], **Then** [expected outcome]
 

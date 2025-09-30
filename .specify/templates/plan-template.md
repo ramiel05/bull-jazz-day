@@ -47,7 +47,32 @@
 ## Constitution Check
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+**I. Functional Patterns**:
+- [ ] Feature design favors pure functions and immutability
+- [ ] No stateful classes where functional alternatives exist
+- [ ] Composition used over inheritance
+
+**II. Test-Driven Development (NON-NEGOTIABLE)**:
+- [ ] Tests will be written BEFORE implementation
+- [ ] Red-green-refactor cycle planned in Phase 2
+- [ ] All public interfaces will have test coverage
+
+**III. Naming Conventions**:
+- [ ] All entities, functions, and components use descriptive names
+- [ ] No abbreviations except universally understood (API, URL, ID)
+- [ ] Naming follows TypeScript/React conventions
+
+**IV. Idiomatic Code**:
+- [ ] Design follows Next.js App Router conventions
+- [ ] React patterns (hooks, composition) used appropriately
+- [ ] No custom abstractions where framework provides solution
+
+**V. Feature Co-location**:
+- [ ] Files organized by feature/domain, not technical role
+- [ ] Related code (components, hooks, types, tests) co-located
+- [ ] Only truly cross-cutting concerns in /shared or /lib
+
+**Violations**: [Document any principle violations with justification, or write "None"]
 
 ## Project Structure
 
@@ -216,4 +241,4 @@ directories captured above]
 - [ ] Complexity deviations documented
 
 ---
-*Based on Constitution v2.1.1 - See `/memory/constitution.md`*
+*Based on Constitution v1.0.0 - See `.specify/memory/constitution.md`*

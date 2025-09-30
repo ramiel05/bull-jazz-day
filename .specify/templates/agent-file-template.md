@@ -14,7 +14,35 @@ Auto-generated from all feature plans. Last updated: [DATE]
 [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES]
 
 ## Code Style
-[LANGUAGE-SPECIFIC, ONLY FOR LANGUAGES IN USE]
+*Based on Constitution v1.0.0 - See `.specify/memory/constitution.md`*
+
+### Functional Patterns
+- Prefer pure functions (no side effects)
+- Use immutability over mutation
+- Favor composition over inheritance
+- Write declarative code over imperative
+
+### Naming Conventions
+- Use descriptive, unambiguous names
+- No abbreviations except API, URL, ID
+- Follow TypeScript/React conventions (camelCase for variables, PascalCase for components)
+- Use kebab-case for file names
+
+### Idiomatic Code
+- Follow Next.js App Router conventions
+- Use React patterns: hooks, composition, props
+- Follow TypeScript best practices: type inference, discriminated unions
+- No custom abstractions when framework provides solution
+
+### Feature Co-location
+- Organize by feature/domain: `features/[feature-name]/`
+- Co-locate: components, hooks, types, tests
+- Cross-cutting concerns only in `/shared/` or `/lib/`
+
+### Test-Driven Development
+- Write tests BEFORE implementation
+- Follow red-green-refactor cycle
+- All public interfaces must have test coverage
 
 ## Recent Changes
 [LAST 3 FEATURES AND WHAT THEY ADDED]
