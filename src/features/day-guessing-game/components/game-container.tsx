@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import invariant from 'tiny-invariant';
 import DayDisplay from './day-display';
 import GuessButtons from './guess-buttons';
 import FeedbackPanel from './feedback-panel';
@@ -10,13 +11,18 @@ import { validateGuess } from '../utils/validate-guess';
 import type { GameState } from '../types/game-types';
 
 export default function GameContainer() {
-  const [gameState, setGameState] = useState<GameState>(() => ({
-    currentDay: selectRandomDay(daysPool),
-    phase: 'guessing',
-    lastResult: null,
-  }));
+  const [gameState, setGameState] = useState<GameState | null>(null);
+
+  useEffect(() => {
+    setGameState({
+      currentDay: selectRandomDay(daysPool),
+      phase: 'guessing',
+      lastResult: null,
+    });
+  }, []);
 
   const handleGuess = (guessedReal: boolean) => {
+    invariant(gameState, 'Cannot make a guess when game state is not initialized');
     const result = validateGuess(gameState.currentDay, guessedReal);
     setGameState({
       ...gameState,
@@ -32,6 +38,16 @@ export default function GameContainer() {
       lastResult: null,
     });
   };
+
+  if (!gameState) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-8">
+        <main className="w-full max-w-4xl" role="main" aria-label="International Day Guessing Game">
+          <div className="text-center">Loading...</div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-8">
