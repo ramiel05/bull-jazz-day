@@ -99,8 +99,9 @@ Task: "Integration test auth flow in features/auth/tests/integration/auth-flow.t
 - Use pure functions and functional patterns where possible
 - Follow feature co-location: group by feature, not technical role
 - Use invariants for error conditions: throw exceptions, not void/null/empty returns
+- Use explicit null types: empty string/0 for defaults, `| null` for intentional absence
 - Commit after each task
-- Avoid: vague tasks, same file conflicts, stateful classes, silent failures
+- Avoid: vague tasks, same file conflicts, stateful classes, silent failures, null for empty defaults
 
 ## Task Generation Rules
 *Applied during main() execution*

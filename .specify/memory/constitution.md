@@ -1,28 +1,29 @@
 <!--
 Sync Impact Report
 ==================
-Version: 1.0.0 → 1.1.0
+Version: 1.1.0 → 1.2.0
 Date: 2025-10-01
 
 Changes:
-- MINOR version bump: New principle added (VI. Explicit Failure with Invariants)
-- Added principle VI: Prefer invariants to throw exceptions over silent failures
-- Development Workflow section updated to include invariant checking
-- Code Review Requirements updated to verify explicit failure handling
+- MINOR version bump: New principle added (VII. Explicit Null Types)
+- Added principle VII: Prefer empty/zero values for defaults, explicit null unions for absence
+- Clarified Principle VI to distinguish between error handling and empty state representation
+- Code Review Requirements updated to verify explicit null type usage
 
 Modified Principles:
-- None (no existing principles renamed or changed)
+- VI. Explicit Failure with Invariants - Clarified that error conditions throw exceptions,
+  while empty/default states use typed values (distinction from null for absence)
 
 Added Sections:
-- VI. Explicit Failure with Invariants (new principle)
+- VII. Explicit Null Types (new principle)
 
 Removed Sections:
 - None
 
 Template Updates:
-✅ plan-template.md - Constitution Check section updated with VI. Explicit Failure with Invariants
-✅ spec-template.md - Edge Cases section updated to include invariant considerations
-✅ tasks-template.md - Notes section updated to include invariant error handling guidance
+✅ plan-template.md - Constitution Check section updated with VII. Explicit Null Types
+✅ spec-template.md - Key Entities section updated with null vs empty state guidance
+✅ tasks-template.md - Notes section updated with explicit null type design guidance
 
 Follow-up TODOs: None
 -->
@@ -101,17 +102,39 @@ Structure the codebase around features, not functionality types.
 
 ### VI. Explicit Failure with Invariants
 
-Prefer invariants that throw exceptions over silent failures, void returns, empty strings, or other implicit error handling.
+Prefer invariants that throw exceptions over silent failures for **error conditions**.
 
 **Rules**:
 - MUST use invariant checks to validate preconditions and postconditions
-- MUST throw exceptions when invariants are violated
-- MUST NOT return void, null, empty strings, or sentinel values to indicate errors
+- MUST throw exceptions when invariants are violated (error conditions)
+- MUST NOT return void, null, empty strings, or sentinel values **to indicate errors**
 - MUST NOT silently swallow exceptions or errors
 - SHOULD use typed errors (Error subclasses or discriminated unions) for error cases
 - MUST ensure failures are observable and debuggable
 
 **Rationale**: Silent failures lead to unexpected states that propagate through the system, making bugs harder to track and debug. Explicit failures via invariants fail fast at the point of violation, making issues immediately visible and preventing dependents from receiving invalid state. This improves system reliability and developer experience.
+
+**Note**: This principle applies to **error conditions**. For valid empty/default states, see Principle VII.
+
+### VII. Explicit Null Types
+
+Distinguish between empty/default states and intentional absence using explicit type design.
+
+**Rules**:
+- MUST use empty strings (`""`), zero (`0`), empty arrays (`[]`), or other falsey values of the appropriate type for valid default or empty states
+- MUST use explicit `| null` union types to represent intentional absence or "not yet set"
+- MUST NOT use `null` for empty states that are valid values of the base type
+- SHOULD make absence/presence semantics clear in type definitions
+- MUST be intentional and expressive about when `null` represents meaningful absence
+
+**Examples**:
+- ✅ `name: string` with default `""` for an optional-but-set name
+- ✅ `count: number` with default `0` for a count that starts at zero
+- ✅ `selectedItem: Item | null` when nothing is selected (intentional absence)
+- ❌ `name: string | null` when empty string would suffice
+- ❌ Using `null` as a default when `""` or `0` communicates empty state
+
+**Rationale**: Using typed empty values (empty strings, zeros) for defaults reduces null-checking ceremony and makes valid empty states explicit. Reserving `null` for intentional absence makes the type system more expressive and prevents confusion between "empty but valid" and "not provided/not applicable". This improves type safety and makes data flow more predictable.
 
 ## Development Workflow
 
@@ -128,6 +151,7 @@ Prefer invariants that throw exceptions over silent failures, void returns, empt
 - Reviewers MUST check for functional patterns and idiomatic code
 - Reviewers MUST verify feature co-location structure
 - Reviewers MUST verify invariants are used for error conditions (not silent failures)
+- Reviewers MUST verify explicit null type usage (null for absence, not for empty defaults)
 
 **Testing Strategy**:
 - Unit tests: Pure functions, utilities, isolated components
@@ -163,4 +187,4 @@ Prefer invariants that throw exceptions over silent failures, void returns, empt
 - Manual review MUST verify adherence during code review
 - Principle violations block PR merge unless explicitly justified and approved
 
-**Version**: 1.1.0 | **Ratified**: 2025-09-30 | **Last Amended**: 2025-10-01
+**Version**: 1.2.0 | **Ratified**: 2025-09-30 | **Last Amended**: 2025-10-01

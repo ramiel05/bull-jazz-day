@@ -74,9 +74,15 @@
 
 **VI. Explicit Failure with Invariants**:
 - [ ] Invariant checks validate preconditions and postconditions
-- [ ] Exceptions thrown when invariants are violated
-- [ ] No silent failures via void, null, empty strings, or sentinel values
+- [ ] Exceptions thrown when invariants are violated (error conditions)
+- [ ] No silent failures via void, null, empty strings, or sentinel values for errors
 - [ ] Typed errors used for error cases (Error subclasses or discriminated unions)
+
+**VII. Explicit Null Types**:
+- [ ] Empty/default states use typed empty values (empty strings, 0, [], etc.)
+- [ ] `| null` union types used only for intentional absence or "not yet set"
+- [ ] No use of `null` for empty states that are valid values of the base type
+- [ ] Type definitions are intentional and expressive about absence semantics
 
 **Violations**: [Document any principle violations with justification, or write "None"]
 
@@ -247,4 +253,4 @@ directories captured above]
 - [ ] Complexity deviations documented
 
 ---
-*Based on Constitution v1.1.0 - See `.specify/memory/constitution.md`*
+*Based on Constitution v1.2.0 - See `.specify/memory/constitution.md`*

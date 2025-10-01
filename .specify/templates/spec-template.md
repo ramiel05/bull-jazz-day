@@ -84,7 +84,9 @@ When creating this spec from a user prompt:
 
 ### Key Entities *(include if feature involves data)*
 - **[Entity 1]**: [What it represents, key attributes without implementation]
+  - Note which attributes have empty defaults (empty string, 0) vs intentional absence (null)
 - **[Entity 2]**: [What it represents, relationships to other entities]
+  - Clarify optional vs nullable semantics where relevant
 
 ---
 
