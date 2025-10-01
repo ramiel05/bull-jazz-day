@@ -67,6 +67,7 @@ When creating this spec from a user prompt:
 ### Edge Cases
 - What happens when [boundary condition]?
 - How does system handle [error scenario]?
+- What invariants must hold? (failures should throw, not return void/null/empty)
 
 ## Requirements *(mandatory)*
 

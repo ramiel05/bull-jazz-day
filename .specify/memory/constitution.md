@@ -1,20 +1,28 @@
 <!--
 Sync Impact Report
 ==================
-Version: 1.0.0 (initial)
-Date: 2025-09-30
+Version: 1.0.0 → 1.1.0
+Date: 2025-10-01
 
 Changes:
-- Initial constitution establishment
-- 5 core principles defined: Functional Patterns, TDD, Naming Conventions, Idiomatic Code, Feature Co-location
-- Development Workflow section added
-- Governance section established
+- MINOR version bump: New principle added (VI. Explicit Failure with Invariants)
+- Added principle VI: Prefer invariants to throw exceptions over silent failures
+- Development Workflow section updated to include invariant checking
+- Code Review Requirements updated to verify explicit failure handling
+
+Modified Principles:
+- None (no existing principles renamed or changed)
+
+Added Sections:
+- VI. Explicit Failure with Invariants (new principle)
+
+Removed Sections:
+- None
 
 Template Updates:
-✅ plan-template.md - Constitution Check section references new principles
-✅ spec-template.md - Aligned with TDD requirements
-✅ tasks-template.md - Feature-based structure emphasis
-✅ agent-file-template.md - Code style section added
+✅ plan-template.md - Constitution Check section updated with VI. Explicit Failure with Invariants
+✅ spec-template.md - Edge Cases section updated to include invariant considerations
+✅ tasks-template.md - Notes section updated to include invariant error handling guidance
 
 Follow-up TODOs: None
 -->
@@ -91,6 +99,20 @@ Structure the codebase around features, not functionality types.
 
 **Rationale**: Feature co-location improves discoverability, reduces cognitive load when working on features, and makes it easier to reason about impact of changes. It also facilitates code ownership and module boundaries.
 
+### VI. Explicit Failure with Invariants
+
+Prefer invariants that throw exceptions over silent failures, void returns, empty strings, or other implicit error handling.
+
+**Rules**:
+- MUST use invariant checks to validate preconditions and postconditions
+- MUST throw exceptions when invariants are violated
+- MUST NOT return void, null, empty strings, or sentinel values to indicate errors
+- MUST NOT silently swallow exceptions or errors
+- SHOULD use typed errors (Error subclasses or discriminated unions) for error cases
+- MUST ensure failures are observable and debuggable
+
+**Rationale**: Silent failures lead to unexpected states that propagate through the system, making bugs harder to track and debug. Explicit failures via invariants fail fast at the point of violation, making issues immediately visible and preventing dependents from receiving invalid state. This improves system reliability and developer experience.
+
 ## Development Workflow
 
 **Red-Green-Refactor Cycle**:
@@ -105,6 +127,7 @@ Structure the codebase around features, not functionality types.
 - Reviewers MUST verify TDD cycle was followed
 - Reviewers MUST check for functional patterns and idiomatic code
 - Reviewers MUST verify feature co-location structure
+- Reviewers MUST verify invariants are used for error conditions (not silent failures)
 
 **Testing Strategy**:
 - Unit tests: Pure functions, utilities, isolated components
@@ -140,4 +163,4 @@ Structure the codebase around features, not functionality types.
 - Manual review MUST verify adherence during code review
 - Principle violations block PR merge unless explicitly justified and approved
 
-**Version**: 1.0.0 | **Ratified**: 2025-09-30 | **Last Amended**: 2025-09-30
+**Version**: 1.1.0 | **Ratified**: 2025-09-30 | **Last Amended**: 2025-10-01

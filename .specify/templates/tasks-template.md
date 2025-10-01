@@ -98,8 +98,9 @@ Task: "Integration test auth flow in features/auth/tests/integration/auth-flow.t
 - Verify tests fail before implementing (TDD principle)
 - Use pure functions and functional patterns where possible
 - Follow feature co-location: group by feature, not technical role
+- Use invariants for error conditions: throw exceptions, not void/null/empty returns
 - Commit after each task
-- Avoid: vague tasks, same file conflicts, stateful classes
+- Avoid: vague tasks, same file conflicts, stateful classes, silent failures
 
 ## Task Generation Rules
 *Applied during main() execution*

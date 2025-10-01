@@ -72,6 +72,12 @@
 - [ ] Related code (components, hooks, types, tests) co-located
 - [ ] Only truly cross-cutting concerns in /shared or /lib
 
+**VI. Explicit Failure with Invariants**:
+- [ ] Invariant checks validate preconditions and postconditions
+- [ ] Exceptions thrown when invariants are violated
+- [ ] No silent failures via void, null, empty strings, or sentinel values
+- [ ] Typed errors used for error cases (Error subclasses or discriminated unions)
+
 **Violations**: [Document any principle violations with justification, or write "None"]
 
 ## Project Structure
@@ -241,4 +247,4 @@ directories captured above]
 - [ ] Complexity deviations documented
 
 ---
-*Based on Constitution v1.0.0 - See `.specify/memory/constitution.md`*
+*Based on Constitution v1.1.0 - See `.specify/memory/constitution.md`*
