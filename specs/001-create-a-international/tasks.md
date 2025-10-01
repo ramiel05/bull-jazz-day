@@ -15,40 +15,40 @@
 
 ## Phase 3.1: Setup
 
-- [ ] T001 Install testing dependencies: `pnpm add -D vitest @testing-library/react @testing-library/jest-dom @vitejs/plugin-react jsdom @testing-library/user-event`
-- [ ] T002 Create Vitest config file at `/Users/ramiel/Projects/bull-jazz-day/vitest.config.ts` with Next.js and TypeScript support, jsdom environment
-- [ ] T003 Create feature directory structure at `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/` with subdirectories: components/, utils/, data/, types/, tests/{unit,integration,component}
+- [x] T001 Install testing dependencies: `pnpm add -D vitest @testing-library/react @testing-library/jest-dom @vitejs/plugin-react jsdom @testing-library/user-event`
+- [x] T002 Create Vitest config file at `/Users/ramiel/Projects/bull-jazz-day/vitest.config.ts` with Next.js and TypeScript support, jsdom environment
+- [x] T003 Create feature directory structure at `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/` with subdirectories: components/, utils/, data/, types/, tests/{unit,integration,component}
 
 ## Phase 3.2: Types & Data
 
-- [ ] T004 [P] Define InternationalDay type in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/types/international-day.ts` with all fields: id, name, isReal, date, description, sourceUrl
-- [ ] T005 [P] Define supporting types (GuessResult, GamePhase, GameState) in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/types/game-types.ts`
-- [ ] T006 Create days pool data in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/data/days-pool.ts` with 10 real days and 10 fake days as readonly array
-- [ ] T007 Write validation tests for days pool in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/tests/unit/days-pool.test.ts` (validate structure, uniqueness, real/fake constraints)
+- [x] T004 [P] Define InternationalDay type in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/types/international-day.ts` with all fields: id, name, isReal, date, description, sourceUrl
+- [x] T005 [P] Define supporting types (GuessResult, GamePhase, GameState) in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/types/game-types.ts`
+- [x] T006 Create days pool data in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/data/days-pool.ts` with 10 real days and 10 fake days as readonly array
+- [x] T007 Write validation tests for days pool in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/tests/unit/days-pool.test.ts` (validate structure, uniqueness, real/fake constraints)
 
 ## Phase 3.3: Pure Functions - TDD ⚠️ MUST COMPLETE BEFORE 3.4
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
 **Constitutional requirement (Principle II - NON-NEGOTIABLE)**
 
-- [ ] T008 [P] Write test for selectRandomDay in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/tests/unit/select-random-day.test.ts` (test returns item from pool, handles empty pool)
-- [ ] T009 Implement selectRandomDay function in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/utils/select-random-day.ts` (pure function using Math.random)
-- [ ] T010 [P] Write test for validateGuess in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/tests/unit/validate-guess.test.ts` (test correct/incorrect scenarios for real and fake days)
-- [ ] T011 Implement validateGuess function in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/utils/validate-guess.ts` (pure function returning GuessResult)
-- [ ] T012 Run all unit tests to verify they pass: `pnpm vitest run src/features/day-guessing-game/tests/unit/`
+- [x] T008 [P] Write test for selectRandomDay in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/tests/unit/select-random-day.test.ts` (test returns item from pool, handles empty pool)
+- [x] T009 Implement selectRandomDay function in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/utils/select-random-day.ts` (pure function using Math.random)
+- [x] T010 [P] Write test for validateGuess in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/tests/unit/validate-guess.test.ts` (test correct/incorrect scenarios for real and fake days)
+- [x] T011 Implement validateGuess function in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/utils/validate-guess.ts` (pure function returning GuessResult)
+- [x] T012 Run all unit tests to verify they pass: `pnpm vitest run src/features/day-guessing-game/tests/unit/`
 
 ## Phase 3.4: Components - TDD ⚠️ MUST COMPLETE BEFORE 3.5
 **CRITICAL: Component tests MUST be written and MUST FAIL before component implementation**
 **Constitutional requirement (Principle II - NON-NEGOTIABLE)**
 
-- [ ] T013 [P] Write test for DayDisplay component in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/tests/component/day-display.test.tsx` (test renders day name prop correctly)
-- [ ] T014 Implement DayDisplay component in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/components/day-display.tsx` (Server Component, displays dayName prop with Tailwind styling)
-- [ ] T015 [P] Write test for GuessButtons component in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/tests/component/guess-buttons.test.tsx` (test button clicks call onGuess with correct boolean, disabled state)
-- [ ] T016 Implement GuessButtons component in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/components/guess-buttons.tsx` (Client Component with 'use client', Real/Fake buttons, onGuess callback)
-- [ ] T017 [P] Write test for FeedbackPanel component in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/tests/component/feedback-panel.test.tsx` (test displays correct/incorrect, shows day details, handles null date/sourceUrl, onContinue callback)
-- [ ] T018 Implement FeedbackPanel component in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/components/feedback-panel.tsx` (Client Component, displays GuessResult, shows date/description/sourceUrl conditionally, Continue button)
-- [ ] T019 [P] Write test for GameContainer component in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/tests/component/game-container.test.tsx` (test initial state, guess flow, continue flow, state transitions)
-- [ ] T020 Implement GameContainer component in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/components/game-container.tsx` (Client Component, useState for GameState, orchestrates child components, uses selectRandomDay and validateGuess)
-- [ ] T021 Run all component tests to verify they pass: `pnpm vitest run src/features/day-guessing-game/tests/component/`
+- [x] T013 [P] Write test for DayDisplay component in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/tests/component/day-display.test.tsx` (test renders day name prop correctly)
+- [x] T014 Implement DayDisplay component in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/components/day-display.tsx` (Server Component, displays dayName prop with Tailwind styling)
+- [x] T015 [P] Write test for GuessButtons component in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/tests/component/guess-buttons.test.tsx` (test button clicks call onGuess with correct boolean, disabled state)
+- [x] T016 Implement GuessButtons component in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/components/guess-buttons.tsx` (Client Component with 'use client', Real/Fake buttons, onGuess callback)
+- [x] T017 [P] Write test for FeedbackPanel component in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/tests/component/feedback-panel.test.tsx` (test displays correct/incorrect, shows day details, handles null date/sourceUrl, onContinue callback)
+- [x] T018 Implement FeedbackPanel component in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/components/feedback-panel.tsx` (Client Component, displays GuessResult, shows date/description/sourceUrl conditionally, Continue button)
+- [x] T019 [P] Write test for GameContainer component in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/tests/component/game-container.test.tsx` (test initial state, guess flow, continue flow, state transitions)
+- [x] T020 Implement GameContainer component in `/Users/ramiel/Projects/bull-jazz-day/src/features/day-guessing-game/components/game-container.tsx` (Client Component, useState for GameState, orchestrates child components, uses selectRandomDay and validateGuess)
+- [x] T021 Run all component tests to verify they pass: `pnpm vitest run src/features/day-guessing-game/tests/component/`
 
 ## Phase 3.5: Integration
 
