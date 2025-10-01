@@ -70,6 +70,8 @@
 **V. Feature Co-location**:
 - [ ] Files organized by feature/domain, not technical role
 - [ ] Related code (components, hooks, types, tests) co-located
+- [ ] Unit test files placed directly next to source files (not in separate tests/ folders)
+- [ ] Integration tests (and higher) placed in dedicated test directories
 - [ ] Only truly cross-cutting concerns in /shared or /lib
 
 **VI. Explicit Failure with Invariants**:
@@ -110,29 +112,40 @@ specs/[###-feature]/
 # [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
 src/
 ├── models/
+│   ├── user.ts
+│   └── user.test.ts          # Unit test co-located
 ├── services/
+│   ├── user-service.ts
+│   └── user-service.test.ts  # Unit test co-located
 ├── cli/
 └── lib/
 
 tests/
 ├── contract/
-├── integration/
-└── unit/
+└── integration/               # Integration and higher-level tests only
 
 # [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
 backend/
 ├── src/
 │   ├── models/
+│   │   ├── user.ts
+│   │   └── user.test.ts      # Unit test co-located
 │   ├── services/
+│   │   ├── auth.ts
+│   │   └── auth.test.ts      # Unit test co-located
 │   └── api/
 └── tests/
+    └── integration/            # Integration tests only
 
 frontend/
 ├── src/
 │   ├── components/
+│   │   ├── header.tsx
+│   │   └── header.test.tsx   # Unit test co-located
 │   ├── pages/
 │   └── services/
 └── tests/
+    └── integration/            # Integration tests only
 
 # [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
 api/
@@ -253,4 +266,4 @@ directories captured above]
 - [ ] Complexity deviations documented
 
 ---
-*Based on Constitution v1.2.0 - See `.specify/memory/constitution.md`*
+*Based on Constitution v1.3.0 - See `.specify/memory/constitution.md`*

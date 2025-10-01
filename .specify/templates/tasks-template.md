@@ -39,6 +39,8 @@
 ## Path Conventions
 - **Feature co-location**: Organize by feature/domain (e.g., `features/user-profile/`)
 - Co-locate related files: components, hooks, types, tests within feature directories
+- **Test co-location**: Unit tests MUST be placed directly next to source files (e.g., `user-service.ts` + `user-service.test.ts`)
+- **Integration tests**: Place in dedicated test directories (e.g., `features/user/tests/integration/`)
 - **Shared code**: Only cross-cutting concerns in `/shared/` or `/lib/`
 - **Next.js structure**: Follow App Router conventions (`app/`, `features/`, `shared/`)
 - Paths must align with Feature Co-location principle from constitution
@@ -51,19 +53,19 @@
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
 **Constitutional requirement (Principle II - NON-NEGOTIABLE)**
-- [ ] T004 [P] Contract test POST /api/users in features/user/tests/contract/users-post.test.ts
-- [ ] T005 [P] Contract test GET /api/users/{id} in features/user/tests/contract/users-get.test.ts
+- [ ] T004 [P] Contract test POST /api/users in tests/contract/users-post.test.ts
+- [ ] T005 [P] Contract test GET /api/users/{id} in tests/contract/users-get.test.ts
 - [ ] T006 [P] Integration test user registration in features/user/tests/integration/registration.test.ts
 - [ ] T007 [P] Integration test auth flow in features/auth/tests/integration/auth-flow.test.ts
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
-- [ ] T008 [P] User model in features/user/types/user.ts
-- [ ] T009 [P] User service (pure functions) in features/user/services/user-service.ts
-- [ ] T010 [P] User profile component in features/user/components/user-profile.tsx
+- [ ] T008 [P] User model + unit test in features/user/types/user.ts + user.test.ts
+- [ ] T009 [P] User service + unit test in features/user/services/user-service.ts + user-service.test.ts
+- [ ] T010 [P] User profile component + unit test in features/user/components/user-profile.tsx + user-profile.test.tsx
 - [ ] T011 POST /api/users route handler in app/api/users/route.ts
 - [ ] T012 GET /api/users/[id] route handler in app/api/users/[id]/route.ts
-- [ ] T013 Input validation (pure functions) in features/user/utils/validation.ts
-- [ ] T014 Error handling utilities in shared/utils/errors.ts
+- [ ] T013 Input validation + unit test in features/user/utils/validation.ts + validation.test.ts
+- [ ] T014 Error handling utilities + unit test in shared/utils/errors.ts + errors.test.ts
 
 ## Phase 3.4: Integration
 - [ ] T015 Connect UserService to DB
@@ -72,11 +74,10 @@
 - [ ] T018 CORS and security headers
 
 ## Phase 3.5: Polish
-- [ ] T019 [P] Unit tests for validation in features/user/tests/unit/validation.test.ts
-- [ ] T020 Performance tests (<200ms)
-- [ ] T021 [P] Update feature documentation in features/user/README.md
-- [ ] T022 Refactor: Remove duplication, improve naming clarity
-- [ ] T023 Run manual-testing.md
+- [ ] T019 Performance tests (<200ms) in tests/performance/
+- [ ] T020 [P] Update feature documentation in features/user/README.md
+- [ ] T021 Refactor: Remove duplication, improve naming clarity
+- [ ] T022 Run manual-testing.md
 
 ## Dependencies
 - Tests (T004-T007) before implementation (T008-T014)
@@ -87,8 +88,8 @@
 ## Parallel Example
 ```
 # Launch T004-T007 together (different feature directories):
-Task: "Contract test POST /api/users in features/user/tests/contract/users-post.test.ts"
-Task: "Contract test GET /api/users/{id} in features/user/tests/contract/users-get.test.ts"
+Task: "Contract test POST /api/users in tests/contract/users-post.test.ts"
+Task: "Contract test GET /api/users/{id} in tests/contract/users-get.test.ts"
 Task: "Integration test registration in features/user/tests/integration/registration.test.ts"
 Task: "Integration test auth flow in features/auth/tests/integration/auth-flow.test.ts"
 ```
@@ -98,10 +99,12 @@ Task: "Integration test auth flow in features/auth/tests/integration/auth-flow.t
 - Verify tests fail before implementing (TDD principle)
 - Use pure functions and functional patterns where possible
 - Follow feature co-location: group by feature, not technical role
+- Co-locate unit tests next to source files (e.g., `foo.ts` + `foo.test.ts`)
+- Place integration tests in dedicated test directories (cross-file boundaries)
 - Use invariants for error conditions: throw exceptions, not void/null/empty returns
 - Use explicit null types: empty string/0 for defaults, `| null` for intentional absence
 - Commit after each task
-- Avoid: vague tasks, same file conflicts, stateful classes, silent failures, null for empty defaults
+- Avoid: vague tasks, same file conflicts, stateful classes, silent failures, null for empty defaults, separate unit test folders
 
 ## Task Generation Rules
 *Applied during main() execution*

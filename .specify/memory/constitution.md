@@ -1,29 +1,28 @@
 <!--
 Sync Impact Report
 ==================
-Version: 1.1.0 → 1.2.0
+Version: 1.2.0 → 1.3.0
 Date: 2025-10-01
 
 Changes:
-- MINOR version bump: New principle added (VII. Explicit Null Types)
-- Added principle VII: Prefer empty/zero values for defaults, explicit null unions for absence
-- Clarified Principle VI to distinguish between error handling and empty state representation
-- Code Review Requirements updated to verify explicit null type usage
+- MINOR version bump: Expanded Principle V (Feature Co-location) with stricter test placement guidance
+- Updated Principle V: Tests must be co-located directly next to source files (not in separate tests/ folders)
+- Exception: Integration and higher-level tests remain in dedicated test directories (cross-file boundaries)
+- Code Review Requirements updated to verify test file co-location
 
 Modified Principles:
-- VI. Explicit Failure with Invariants - Clarified that error conditions throw exceptions,
-  while empty/default states use typed values (distinction from null for absence)
+- V. Feature Co-location - Expanded with explicit test co-location requirements (unit tests next to source, integration tests in dedicated folders)
 
 Added Sections:
-- VII. Explicit Null Types (new principle)
+- None (expanded existing principle)
 
 Removed Sections:
 - None
 
 Template Updates:
-✅ plan-template.md - Constitution Check section updated with VII. Explicit Null Types
-✅ spec-template.md - Key Entities section updated with null vs empty state guidance
-✅ tasks-template.md - Notes section updated with explicit null type design guidance
+✅ plan-template.md - Project Structure examples updated to show co-located test files
+✅ spec-template.md - No changes required (principle-agnostic)
+✅ tasks-template.md - Path examples updated to show co-located test placement
 
 Follow-up TODOs: None
 -->
@@ -89,7 +88,7 @@ Favour idiomatic code patterns and naming conventions over custom abstractions.
 
 ### V. Feature Co-location
 
-Structure the codebase around features, not functionality types.
+Structure the codebase around features, not functionality types, with maximum co-location of related files.
 
 **Rules**:
 - MUST organize files by feature/domain (e.g., `/features/user-profile/`)
@@ -98,7 +97,17 @@ Structure the codebase around features, not functionality types.
 - SHOULD keep feature directories self-contained and independently understandable
 - MAY share truly cross-cutting concerns in `/shared/` or `/lib/`
 
-**Rationale**: Feature co-location improves discoverability, reduces cognitive load when working on features, and makes it easier to reason about impact of changes. It also facilitates code ownership and module boundaries.
+**Test Co-location**:
+- MUST place unit test files directly next to the files they test (e.g., `user-service.ts` and `user-service.test.ts` in same directory)
+- MUST NOT create separate `tests/` folders within features for unit tests
+- MUST place integration tests (and higher in testing pyramid) in dedicated test directories since they test across file boundaries
+- Examples:
+  - ✅ `features/user/services/user-service.ts` + `features/user/services/user-service.test.ts`
+  - ✅ `features/user/components/user-profile.tsx` + `features/user/components/user-profile.test.tsx`
+  - ✅ `features/user/tests/integration/registration-flow.test.ts` (integration test)
+  - ❌ `features/user/tests/unit/user-service.test.ts` (unit test in separate folder)
+
+**Rationale**: Maximum co-location improves discoverability, reduces cognitive load when working on features, and makes it immediately obvious which tests cover which code. Unit tests belong next to their source files; integration tests belong in dedicated folders since they verify cross-file interactions. This facilitates code ownership, makes refactoring safer, and reduces navigation overhead.
 
 ### VI. Explicit Failure with Invariants
 
@@ -150,13 +159,15 @@ Distinguish between empty/default states and intentional absence using explicit 
 - Reviewers MUST verify TDD cycle was followed
 - Reviewers MUST check for functional patterns and idiomatic code
 - Reviewers MUST verify feature co-location structure
+- Reviewers MUST verify unit tests are co-located next to source files (not in separate test folders)
+- Reviewers MUST verify integration tests are in dedicated test directories
 - Reviewers MUST verify invariants are used for error conditions (not silent failures)
 - Reviewers MUST verify explicit null type usage (null for absence, not for empty defaults)
 
 **Testing Strategy**:
-- Unit tests: Pure functions, utilities, isolated components
-- Integration tests: Feature workflows, API routes, data flows
-- Contract tests: API interfaces, external integrations
+- Unit tests: Pure functions, utilities, isolated components (co-located with source)
+- Integration tests: Feature workflows, API routes, data flows (dedicated test directories)
+- Contract tests: API interfaces, external integrations (dedicated test directories)
 - E2E tests: Critical user journeys (minimal, high-value only)
 
 ## Governance
@@ -187,4 +198,4 @@ Distinguish between empty/default states and intentional absence using explicit 
 - Manual review MUST verify adherence during code review
 - Principle violations block PR merge unless explicitly justified and approved
 
-**Version**: 1.2.0 | **Ratified**: 2025-09-30 | **Last Amended**: 2025-10-01
+**Version**: 1.3.0 | **Ratified**: 2025-09-30 | **Last Amended**: 2025-10-01
