@@ -1,0 +1,3 @@
+[submodule ".ai-config"]
+	path = .ai-config
+	url = git@github.com:ramiel05/earth-net-6.git
