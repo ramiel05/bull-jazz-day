@@ -1,0 +1,4 @@
+- Add a feature that lets you get an alert a few days or what ever before the day comes up next time.
+- streak counter
+- sharing
+- one per day to compete
