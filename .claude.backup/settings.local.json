@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.specify/scripts/bash/create-new-feature.sh:*)",
+      "Bash(.specify/scripts/bash/setup-plan.sh:*)",
+      "Bash(.specify/scripts/bash/check-prerequisites.sh:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm vitest run:*)",
+      "Bash(pnpm dev:*)",
+      "Bash(pnpm tsc:*)",
+      "Bash(pnpm start:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
