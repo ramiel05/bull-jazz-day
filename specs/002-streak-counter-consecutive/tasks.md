@@ -26,7 +26,7 @@
 ## Phase 3.1: Setup
 
 - [ ] T001 [P] Create type definitions in `src/features/day-guessing-game/streak/types/streak-types.ts`
-- [ ] T002 [P] Create milestone constants in `src/features/day-guessing-game/streak/constants/milestones.ts`
+- [ ] T002 [P] Create milestone configuration constants (MILESTONE_CONFIGS array) in `src/features/day-guessing-game/streak/constants/milestones.ts`
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 
@@ -154,8 +154,9 @@ Task: "Implement getMilestoneColor function in src/features/day-guessing-game/st
 - Co-locate unit tests next to source files
 - Integration tests in dedicated test directory
 - Use Vitest + @testing-library/react for testing
-- CSS transitions for animations (no animation library)
+- CSS transitions for milestone animations (embedded in StreakDisplay component, no separate animation component)
 - Tailwind color classes for milestone colors
+- MILESTONE_CONFIGS array defined in constants/milestones.ts, imported by utils
 
 ### File Path Convention
 All files under: `src/features/day-guessing-game/streak/`

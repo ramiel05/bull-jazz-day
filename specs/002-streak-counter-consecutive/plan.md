@@ -132,9 +132,7 @@ src/
         │   │   └── get-milestone-color.test.ts
         │   └── components/
         │       ├── streak-display.tsx
-        │       ├── streak-display.test.tsx
-        │       ├── milestone-animation.tsx
-        │       └── milestone-animation.test.tsx
+        │       └── streak-display.test.tsx
         ├── types/
         │   ├── game-types.ts          # MODIFIED: Add streak to GameState
         │   ├── game-types.test.ts
@@ -218,7 +216,7 @@ src/
    - **Types** (from data-model.md): streak-types.ts → test → implementation
    - **Utils** (from contracts/): calculate-milestone, get-milestone-color → tests → implementations [P]
    - **Hook** (from contracts/): use-streak-counter → test → implementation
-   - **Components** (from contracts/): streak-display, milestone-animation → tests → implementations [P]
+   - **Components** (from contracts/): streak-display (includes milestone animations via CSS) → test → implementation
    - **Integration**: Modify game-types.ts, game-container.tsx → integration test
 3. Each contract generates 2 tasks:
    - Task N: Write failing test (RED)
@@ -242,11 +240,9 @@ src/
 - useStreakCounter test
 - useStreakCounter implementation
 
-**Layer 4 - Components** (depends on Layer 3, parallel within layer [P]):
-- streak-display test
-- streak-display implementation
-- milestone-animation test
-- milestone-animation implementation
+**Layer 4 - Components** (depends on Layer 3):
+- streak-display test (includes milestone animation behavior)
+- streak-display implementation (CSS transitions for milestone animations)
 
 **Layer 5 - Integration** (depends on all previous):
 - Extend GameState type (game-types.ts)
@@ -255,19 +251,21 @@ src/
 - Manual quickstart validation
 
 **Task Breakdown Estimate**:
-- Types: 2 tasks (test + impl)
-- Utils: 4 tasks (2 functions × 2 tasks each)
-- Hook: 2 tasks (test + impl)
-- Components: 4 tasks (2 components × 2 tasks each)
-- Integration: 4 tasks (type extension + integration test + game container + validation)
-- **Total**: ~16 tasks in dependency order
+- Setup: 2 tasks (types + constants)
+- Tests: 5 tasks (4 contract tests + 1 integration test)
+- Utils: 2 tasks (2 functions)
+- Hook: 1 task (useStreakCounter)
+- Components: 1 task (StreakDisplay with animations)
+- Integration: 4 tasks (GameState extension + integration + validation)
+- Validation: 5 tasks (manual quickstart scenarios)
+- **Total**: ~20 tasks in dependency order
 
 **TDD Enforcement**:
 - All implementation tasks blocked by corresponding test task
 - No [P] across TDD boundaries (test must pass before implementation starts)
 - [P] only for independent test files or independent implementation files
 
-**Estimated Output**: 16 numbered, dependency-ordered tasks in tasks.md
+**Estimated Output**: 20 numbered, dependency-ordered tasks in tasks.md
 
 **IMPORTANT**: This phase is executed by the /tasks command, NOT by /plan
 
