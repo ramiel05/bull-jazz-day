@@ -1,4 +1,5 @@
 import type { InternationalDay } from './international-day';
+import type { StreakState } from '../streak/types/streak-types';
 
 export type GuessResult = {
   correct: boolean;
@@ -11,4 +12,5 @@ export type GameState = {
   currentDay: InternationalDay;
   phase: GamePhase;
   lastResult: GuessResult | null;
+  streak: StreakState;
 };

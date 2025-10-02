@@ -25,8 +25,8 @@
 
 ## Phase 3.1: Setup
 
-- [ ] T001 [P] Create type definitions in `src/features/day-guessing-game/streak/types/streak-types.ts`
-- [ ] T002 [P] Create milestone configuration constants (MILESTONE_CONFIGS array) in `src/features/day-guessing-game/streak/constants/milestones.ts`
+- [x] T001 [P] Create type definitions in `src/features/day-guessing-game/streak/types/streak-types.ts`
+- [x] T002 [P] Create milestone configuration constants (MILESTONE_CONFIGS array) in `src/features/day-guessing-game/streak/constants/milestones.ts`
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 
@@ -35,44 +35,44 @@
 
 ### Contract Tests (Pure Functions & Hooks)
 
-- [ ] T003 [P] Contract test for calculateMilestone in `src/features/day-guessing-game/streak/utils/calculate-milestone.test.ts`
-- [ ] T004 [P] Contract test for getMilestoneColor in `src/features/day-guessing-game/streak/utils/get-milestone-color.test.ts`
-- [ ] T005 [P] Contract test for useStreakCounter in `src/features/day-guessing-game/streak/hooks/use-streak-counter.test.ts`
-- [ ] T006 [P] Contract test for StreakDisplay component in `src/features/day-guessing-game/streak/components/streak-display.test.tsx`
+- [x] T003 [P] Contract test for calculateMilestone in `src/features/day-guessing-game/streak/utils/calculate-milestone.test.ts`
+- [x] T004 [P] Contract test for getMilestoneColor in `src/features/day-guessing-game/streak/utils/get-milestone-color.test.ts`
+- [x] T005 [P] Contract test for useStreakCounter in `src/features/day-guessing-game/streak/hooks/use-streak-counter.test.ts`
+- [x] T006 [P] Contract test for StreakDisplay component in `src/features/day-guessing-game/streak/components/streak-display.test.tsx`
 
 ### Integration Tests
 
-- [ ] T007 Integration test for full streak flow in `src/features/day-guessing-game/streak/tests/integration/streak-flow.test.tsx`
+- [x] T007 Integration test for full streak flow in `src/features/day-guessing-game/streak/tests/integration/streak-flow.test.tsx`
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
 
 ### Utilities (Pure Functions)
 
-- [ ] T008 [P] Implement calculateMilestone function in `src/features/day-guessing-game/streak/utils/calculate-milestone.ts`
-- [ ] T009 [P] Implement getMilestoneColor function in `src/features/day-guessing-game/streak/utils/get-milestone-color.ts`
+- [x] T008 [P] Implement calculateMilestone function in `src/features/day-guessing-game/streak/utils/calculate-milestone.ts`
+- [x] T009 [P] Implement getMilestoneColor function in `src/features/day-guessing-game/streak/utils/get-milestone-color.ts`
 
 ### Hooks
 
-- [ ] T010 Implement useStreakCounter hook in `src/features/day-guessing-game/streak/hooks/use-streak-counter.ts`
+- [x] T010 Implement useStreakCounter hook in `src/features/day-guessing-game/streak/hooks/use-streak-counter.ts`
 
 ### Components
 
-- [ ] T011 Implement StreakDisplay component in `src/features/day-guessing-game/streak/components/streak-display.tsx`
+- [x] T011 Implement StreakDisplay component in `src/features/day-guessing-game/streak/components/streak-display.tsx`
 
 ## Phase 3.4: Integration
 
-- [ ] T012 Extend GameState type with streak field in `src/features/day-guessing-game/types/game-types.ts`
-- [ ] T013 Integrate useStreakCounter into GameContainer in `src/features/day-guessing-game/components/game-container.tsx`
-- [ ] T014 Update handleGuess to increment/reset streak in `src/features/day-guessing-game/components/game-container.tsx`
-- [ ] T015 Add StreakDisplay to GameContainer UI in `src/features/day-guessing-game/components/game-container.tsx`
+- [x] T012 Extend GameState type with streak field in `src/features/day-guessing-game/types/game-types.ts`
+- [x] T013 Integrate useStreakCounter into GameContainer in `src/features/day-guessing-game/components/game-container.tsx`
+- [x] T014 Update handleGuess to increment/reset streak in `src/features/day-guessing-game/components/game-container.tsx`
+- [x] T015 Add StreakDisplay to GameContainer UI in `src/features/day-guessing-game/components/game-container.tsx`
 
 ## Phase 3.5: Polish
 
-- [ ] T016 Manual validation: Scenario 1 (Basic Streak Increment) from quickstart.md
-- [ ] T017 Manual validation: Scenario 2 (Streak Reset) from quickstart.md
-- [ ] T018 Manual validation: Scenario 3 (First Milestone) from quickstart.md
-- [ ] T019 Manual validation: Scenario 4-5 (Multiple Milestones, Color Reset) from quickstart.md
-- [ ] T020 Manual validation: Scenario 6-7 (Session Persistence, Accessibility) from quickstart.md
+- [x] T016 Manual validation: Scenario 1 (Basic Streak Increment) from quickstart.md
+- [x] T017 Manual validation: Scenario 2 (Streak Reset) from quickstart.md
+- [x] T018 Manual validation: Scenario 3 (First Milestone) from quickstart.md
+- [x] T019 Manual validation: Scenario 4-5 (Multiple Milestones, Color Reset) from quickstart.md
+- [x] T020 Manual validation: Scenario 6-7 (Session Persistence, Accessibility) from quickstart.md
 
 ## Dependencies
 
