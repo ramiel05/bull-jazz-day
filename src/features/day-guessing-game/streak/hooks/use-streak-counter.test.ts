@@ -93,13 +93,13 @@ describe("useStreakCounter", () => {
       result.current.incrementStreak(); // 5
     });
 
-    const bestBefore = result.current.streakState.bestStreak;
+    const bestStreakBefore = result.current.streakState.bestStreak;
 
     act(() => {
       result.current.resetStreak();
     });
 
-    expect(result.current.streakState.bestStreak).toBe(bestBefore);
+    expect(result.current.streakState.bestStreak).toBe(bestStreakBefore);
     expect(result.current.streakState.bestStreak).toBe(5);
   });
 
