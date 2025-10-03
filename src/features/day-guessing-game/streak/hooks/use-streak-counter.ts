@@ -9,9 +9,9 @@
 
 import { useState, useCallback } from "react";
 import invariant from "tiny-invariant";
-import type { StreakState } from "../types/streak-types";
-import { initialStreakState } from "../types/streak-types";
-import { getMilestoneColor } from "../utils/get-milestone-color";
+import type { StreakState } from "~/features/day-guessing-game/streak/types/streak-types";
+import { initialStreakState } from "~/features/day-guessing-game/streak/types/streak-types";
+import { getMilestoneColor } from "~/features/day-guessing-game/streak/utils/get-milestone-color";
 
 /**
  * Hook return type

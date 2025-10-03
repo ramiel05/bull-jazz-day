@@ -5,13 +5,13 @@ import invariant from 'tiny-invariant';
 import DayDisplay from './day-display';
 import GuessButtons from './guess-buttons';
 import FeedbackPanel from './feedback-panel';
-import { daysPool } from '../data/days-pool';
-import { selectRandomDay } from '../utils/select-random-day';
-import { validateGuess } from '../utils/validate-guess';
-import type { GameState } from '../types/game-types';
-import { useStreakCounter } from '../streak/hooks/use-streak-counter';
-import { initialStreakState } from '../streak/types/streak-types';
-import { StreakDisplay } from '../streak/components/streak-display';
+import { daysPool } from '~/features/day-guessing-game/data/days-pool';
+import { selectRandomDay } from '~/features/day-guessing-game/utils/select-random-day';
+import { validateGuess } from '~/features/day-guessing-game/utils/validate-guess';
+import type { GameState } from '~/features/day-guessing-game/types/game-types';
+import { useStreakCounter } from '~/features/day-guessing-game/streak/hooks/use-streak-counter';
+import { initialStreakState } from '~/features/day-guessing-game/streak/types/streak-types';
+import { StreakDisplay } from '~/features/day-guessing-game/streak/components/streak-display';
 
 export default function GameContainer() {
   const [gameState, setGameState] = useState<GameState | null>(null);

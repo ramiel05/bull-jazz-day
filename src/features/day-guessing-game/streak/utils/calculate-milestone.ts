@@ -6,8 +6,8 @@
  */
 
 import invariant from "tiny-invariant";
-import { MILESTONE_CONFIGS } from "../constants/milestones";
-import type { MilestoneConfig } from "../types/streak-types";
+import { MILESTONE_CONFIGS } from "~/features/day-guessing-game/streak/constants/milestones";
+import type { MilestoneConfig } from "~/features/day-guessing-game/streak/types/streak-types";
 
 /**
  * Determines if the given streak count exactly matches a milestone.

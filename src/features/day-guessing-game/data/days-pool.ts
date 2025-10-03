@@ -1,4 +1,4 @@
-import type { InternationalDay } from '../types/international-day';
+import type { InternationalDay } from '~/features/day-guessing-game/types/international-day';
 
 export const daysPool: readonly InternationalDay[] = [
   // Real days

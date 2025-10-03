@@ -6,7 +6,7 @@
  */
 
 import invariant from "tiny-invariant";
-import { MILESTONE_CONFIGS } from "../constants/milestones";
+import { MILESTONE_CONFIGS } from "~/features/day-guessing-game/streak/constants/milestones";
 
 /**
  * Returns the color for the highest milestone at or below the current streak.

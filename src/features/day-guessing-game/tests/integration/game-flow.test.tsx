@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import GameContainer from '../../components/game-container';
+import GameContainer from '~/features/day-guessing-game/components/game-container';
 
 describe('Game Flow Integration', () => {
   it('should complete full game round: load → guess → feedback → continue', async () => {

@@ -1,5 +1,5 @@
-import type { InternationalDay } from '../types/international-day';
-import type { GuessResult } from '../types/game-types';
+import type { InternationalDay } from '~/features/day-guessing-game/types/international-day';
+import type { GuessResult } from '~/features/day-guessing-game/types/game-types';
 
 export function validateGuess(day: InternationalDay, guessedReal: boolean): GuessResult {
   return {

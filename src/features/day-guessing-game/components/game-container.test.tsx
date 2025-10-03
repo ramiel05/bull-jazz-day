@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import GameContainer from '../../components/game-container';
+import GameContainer from './game-container';
 
 // Mock the days pool to have predictable data for testing
-vi.mock('../../data/days-pool', () => ({
+vi.mock('~/features/day-guessing-game/data/days-pool', () => ({
   daysPool: [
     {
       id: 'mock-real',

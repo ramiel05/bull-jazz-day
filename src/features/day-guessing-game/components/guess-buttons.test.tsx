@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import GuessButtons from '../../components/guess-buttons';
+import GuessButtons from './guess-buttons';
 
 describe('GuessButtons', () => {
   it('should render Real and Fake buttons', () => {

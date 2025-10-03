@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { selectRandomDay } from '../../utils/select-random-day';
-import type { InternationalDay } from '../../types/international-day';
+import { selectRandomDay } from './select-random-day';
+import type { InternationalDay } from '~/features/day-guessing-game/types/international-day';
 
 describe('selectRandomDay', () => {
   it('should return a day from the pool', () => {

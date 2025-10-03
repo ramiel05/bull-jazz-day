@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import DayDisplay from '../../components/day-display';
+import DayDisplay from './day-display';
 
 describe('DayDisplay', () => {
   it('should render the day name', () => {

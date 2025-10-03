@@ -1,6 +1,6 @@
 'use client';
 
-import type { GuessResult } from '../types/game-types';
+import type { GuessResult } from '~/features/day-guessing-game/types/game-types';
 
 type FeedbackPanelProps = {
   result: GuessResult;

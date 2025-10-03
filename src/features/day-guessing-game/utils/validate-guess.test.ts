@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { validateGuess } from '../../utils/validate-guess';
-import type { InternationalDay } from '../../types/international-day';
+import { validateGuess } from './validate-guess';
+import type { InternationalDay } from '~/features/day-guessing-game/types/international-day';
 
 describe('validateGuess', () => {
   const realDay: InternationalDay = {

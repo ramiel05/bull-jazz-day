@@ -9,9 +9,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import GameContainer from "../../../components/game-container";
-import * as selectRandomDayModule from "../../../utils/select-random-day";
-import type { InternationalDay } from "../../../types/international-day";
+import GameContainer from "~/features/day-guessing-game/components/game-container";
+import * as selectRandomDayModule from "~/features/day-guessing-game/utils/select-random-day";
+import type { InternationalDay } from "~/features/day-guessing-game/types/international-day";
 
 // Mock days for controlled testing
 const realDay: InternationalDay = {

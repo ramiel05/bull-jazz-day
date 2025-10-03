@@ -1,5 +1,5 @@
 import type { InternationalDay } from './international-day';
-import type { StreakState } from '../streak/types/streak-types';
+import type { StreakState } from '~/features/day-guessing-game/streak/types/streak-types';
 
 export type GuessResult = {
   correct: boolean;

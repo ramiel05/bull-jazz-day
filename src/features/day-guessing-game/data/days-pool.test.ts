@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { daysPool } from '../../data/days-pool';
+import { daysPool } from './days-pool';
 
 describe('Days Pool', () => {
   it('should have at least 10 days total', () => {

@@ -3,7 +3,7 @@
  * Feature: 002-streak-counter-consecutive
  */
 
-import type { MilestoneConfig } from "../types/streak-types";
+import type { MilestoneConfig } from "~/features/day-guessing-game/streak/types/streak-types";
 
 /**
  * Immutable array of milestone configurations.

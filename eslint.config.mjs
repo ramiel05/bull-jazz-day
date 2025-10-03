@@ -1,7 +1,6 @@
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
-import importPlugin from "eslint-plugin-import";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -11,7 +10,6 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     ignores: [
       "node_modules/**",
@@ -21,10 +19,8 @@ const eslintConfig = [
       "next-env.d.ts",
     ],
   },
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
-    plugins: {
-      import: importPlugin,
-    },
     settings: {
       "import/resolver": {
         typescript: {
@@ -34,9 +30,17 @@ const eslintConfig = [
       },
     },
     rules: {
-      // Prevents any use of '..' in imports
-      "import/no-relative-parent-imports": "error",
-      
+      // Prevents relative parent imports (../) but allows path aliases (~/)
+      "no-restricted-imports": [
+        "error",
+        {
+          "patterns": [{
+            "group": ["../*", "../**"],
+            "message": "Relative parent imports are not allowed. Use path aliases like '~/' instead."
+          }]
+        }
+      ],
+
       // Enforces clean relative paths and prevents unnecessary segments
       "import/no-useless-path-segments": ["error", {
         noUselessIndex: true,

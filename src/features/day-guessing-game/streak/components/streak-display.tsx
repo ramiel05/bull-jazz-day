@@ -9,7 +9,7 @@
 
 import { useEffect, useRef } from "react";
 import invariant from "tiny-invariant";
-import { calculateMilestone } from "../utils/calculate-milestone";
+import { calculateMilestone } from "~/features/day-guessing-game/streak/utils/calculate-milestone";
 
 export type StreakDisplayProps = {
   /** The current consecutive correct guesses (must be >= 0) */

@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import FeedbackPanel from '../../components/feedback-panel';
-import type { GuessResult } from '../../types/game-types';
-import type { InternationalDay } from '../../types/international-day';
+import FeedbackPanel from './feedback-panel';
+import type { GuessResult } from '~/features/day-guessing-game/types/game-types';
+import type { InternationalDay } from '~/features/day-guessing-game/types/international-day';
 
 describe('FeedbackPanel', () => {
   const realDay: InternationalDay = {
