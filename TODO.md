@@ -13,3 +13,7 @@ make sure to also update spec in relevant artefacts. first don't even mention th
 - improve milestone animation
   - add a size increase animation, really make it pop.
   - add a test case the asserts there is an animation. (not sure best way to test at the unit level, check presence of a class? do you have any suggestions?)
+
+# earth-net-6
+
+try having a post commit script thing to sync changes to directives
