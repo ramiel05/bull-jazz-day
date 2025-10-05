@@ -1,7 +1,9 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import GameContainer from '~/features/day-guessing-game/components/game-container';
+import * as selectRandomDay from '~/features/day-guessing-game/utils/select-random-day';
+import type { InternationalDay } from '~/features/day-guessing-game/types/international-day';
 
 describe('Game Flow Integration', () => {
   it('should complete full game round: load → guess → feedback → continue', async () => {
@@ -34,23 +36,36 @@ describe('Game Flow Integration', () => {
     expect(screen.queryByText(/correct|incorrect/i)).not.toBeInTheDocument();
   });
 
-  it('should show correct feedback for real day guessed correctly', async () => {
-    const user = userEvent.setup();
+  it('should show correct feedback for real day with description and source', async () => {
+    const mockDay: InternationalDay = {
+      id: 'mock-real',
+      name: 'Mock Real Day',
+      isReal: true,
+      date: 'January 1',
+      description: 'This is a mock description for testing',
+      sourceUrl: 'https://example.com/mock-day',
+    };
 
+    vi.spyOn(selectRandomDay, 'selectRandomDay').mockReturnValue(mockDay);
+
+    const user = userEvent.setup();
     render(<GameContainer />);
 
-    // Keep guessing until we get a real day and guess it correctly
-    // This test is probabilistic but should work with the mock pool
+    // Make a guess
     await user.click(screen.getByRole('button', { name: /real/i }));
 
     // Should show feedback (correct or incorrect)
-    const feedback = screen.getByText(/correct|incorrect/i);
-    expect(feedback).toBeInTheDocument();
+    expect(screen.getByText(/correct|incorrect/i)).toBeInTheDocument();
 
-    // Should show description (check for text content presence)
-    const container = feedback.parentElement?.parentElement;
-    expect(container).toBeInTheDocument();
-    expect(container?.textContent).toBeTruthy();
+    // Should show the description
+    expect(screen.getByText('This is a mock description for testing')).toBeInTheDocument();
+
+    // Should have a source link with the correct href
+    const sourceLink = screen.getByRole('link');
+    expect(sourceLink).toBeInTheDocument();
+    expect(sourceLink).toHaveAttribute('href', 'https://example.com/mock-day');
+
+    vi.restoreAllMocks();
   });
 
   it('should handle multiple consecutive rounds without errors', async () => {
