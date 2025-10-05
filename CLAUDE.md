@@ -3,6 +3,8 @@
 Auto-generated from all feature plans. Last updated: 2025-10-01
 
 ## Active Technologies
+- TypeScript 5.x + React 19.1.0, Next.js 15.5.4 (App Router), tiny-invariant 1.3.3 (003-daily-guess-mechanic)
+- Browser localStorage (client-side persistence, no server) (003-daily-guess-mechanic)
 
 - TypeScript 5.x with React 19.1.0 + Next.js 15.5.4 (App Router), tiny-invariant 1.3.3, React hooks (useState, useEffect) (002-streak-counter-consecutive)
 
@@ -71,6 +73,7 @@ _Based on Constitution v1.3.0 - See `.specify/memory/constitution.md`_
 - Be expressive about absence semantics
 
 ## Recent Changes
+- 003-daily-guess-mechanic: Added TypeScript 5.x + React 19.1.0, Next.js 15.5.4 (App Router), tiny-invariant 1.3.3
 
 - 002-streak-counter-consecutive: Added TypeScript 5.x with React 19.1.0 + Next.js 15.5.4 (App Router), tiny-invariant 1.3.3, React hooks (useState, useEffect)
 

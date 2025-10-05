@@ -113,11 +113,11 @@ A visitor arrives at the game and is presented with the daily international day 
 - **FR-013**: System MUST show the visitor their previous feedback screen when they return on the same day on the same device/browser
 - **FR-014**: System MUST NOT allow the visitor to make a new guess for a day they have already guessed on the same device/browser
 - **FR-015**: System MUST present a new daily challenge when the visitor returns on a different calendar date (based on their timezone)
-- **FR-016**: System MUST maintain an expanded pool of approximately 50-100 real international days with calendar dates to support daily challenges (current pool from Feature 001 is insufficient - needs expansion through research)
+- **FR-016**: System MUST maintain an expanded pool of approximately 50-100 real international days and 50-100 fake days with calendar dates to support daily challenges (current pool from Feature 001 is insufficient - needs expansion through research)
 
 ### Key Entities
 
-- **International Day**: Represents a day entry in the game pool. Contains the day name (e.g., "International Women's Day"), whether it is real or fake, the calendar date it occurs on (month and day, e.g., March 8), a brief description providing context, and a source/reference link. Real days must have Wikipedia entries or backing from major organizations. The pool requires expansion from approximately 10-20 days (Feature 001) to approximately 50-100 real days with calendar dates to support daily gameplay.
+- **International Day**: Represents a day entry in the game pool. Contains the day name (e.g., "International Women's Day"), whether it is real or fake, the calendar date it occurs on (stored in a standard format that can be matched with JavaScript Date API), a brief description providing context, and a source/reference link. Real days must have Wikipedia entries or backing from major organizations. The pool requires expansion from approximately 10-20 days (Feature 001) to approximately 50-100 real days and 50-100 fake days with calendar dates to support daily gameplay.
 
 - **Daily Challenge**: Represents the challenge presented to visitors for a specific calendar date in a specific timezone. Contains the calendar date, the associated International Day from the pool, and the timezone. All visitors in the same timezone for the same calendar date see the same Daily Challenge.
 
