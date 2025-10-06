@@ -8,13 +8,14 @@
 ## Clarifications
 
 ### Session 2025-10-05
+
 - Q: When a real international day exists for the current calendar date (e.g., March 8 = International Women's Day), should the daily challenge always show that specific real day, or should the system randomly choose between showing the real day OR a fake day? → A: Randomly choose: either show the real day for that date OR show any random fake day from the pool
 - Q: When a visitor clears their browser storage/cookies and returns on the same day, what should happen? → A: Allow them to guess again (treat as new visitor)
 - Q: When selecting the daily challenge (real or fake day), how should the randomness be deterministic to ensure all visitors in the same timezone see the same challenge? → A: Use the calendar date as a seed for randomization (e.g., "2025-10-04" → deterministic random selection)
-- Q: The spec mentions expanding the pool of real international days. What is the target size for the expanded pool to support daily gameplay? → A: ~50-100 real days (covers major dates, gaps filled with fake days)
-- Q: When the feedback screen displays "Come back tomorrow for a new daily challenge", should it also show a countdown timer or the specific time when the next challenge becomes available? → A: Yes - show countdown or next availability time
+- Q: When the feedback screen displays "Come back tomorrow for a new daily challenge", should it also show a countdown timer or the specific time when the next challenge becomes available? → A: Yes - show a countdown timer until next challenge
 
 ## Execution Flow (main)
+
 ```
 1. Parse user description from Input
    → If empty: ERROR "No feature description provided"
@@ -37,17 +38,21 @@
 ---
 
 ## ⚡ Quick Guidelines
+
 - ✅ Focus on WHAT users need and WHY
 - ❌ Avoid HOW to implement (no tech stack, APIs, code structure)
 - 👥 Written for business stakeholders, not developers
 
 ### Section Requirements
+
 - **Mandatory sections**: Must be completed for every feature
 - **Optional sections**: Include only when relevant to the feature
 - When a section doesn't apply, remove it entirely (don't leave as "N/A")
 
 ### For AI Generation
+
 When creating this spec from a user prompt:
+
 1. **Mark all ambiguities**: Use [NEEDS CLARIFICATION: specific question] for any assumption you'd need to make
 2. **Don't guess**: If the prompt doesn't specify something (e.g., "login system" without auth method), mark it
 3. **Think like a tester**: Every vague requirement should fail the "testable and unambiguous" checklist item
@@ -63,13 +68,15 @@ When creating this spec from a user prompt:
 
 ---
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### Primary User Story
+
 A visitor arrives at the game and is presented with the daily international day of X challenge. The prompt reads "Today is [Day Name]" where the day shown matches the current calendar date in their timezone. They guess whether it's real or fake, see immediate feedback, and if they return later the same day on the same device, they see their previous result and are informed to come back tomorrow for a new challenge. All visitors in the same timezone see the same daily challenge, enabling them to compare results with friends and on social media.
 
 ### Acceptance Scenarios
-*Write scenarios that can be directly converted to tests (support TDD)*
+
+_Write scenarios that can be directly converted to tests (support TDD)_
 
 1. **Given** a visitor in EST timezone loads the game on October 4, 2025, **When** the page loads, **Then** they see a prompt reading "Today is [Day Name]" where the day corresponds to October 4, along with "Real" or "Fake" guess options
 
@@ -77,7 +84,7 @@ A visitor arrives at the game and is presented with the daily international day 
 
 3. **Given** a visitor in PST timezone loads the game on October 4, 2025, **When** the page loads, **Then** they see a day name that corresponds to October 4 in PST (which may differ from EST if it's a different calendar date in PST)
 
-4. **Given** a visitor sees "Today is International Taco Day" (October 4), **When** they select "Real", **Then** the system shows whether they were correct, reveals the truth with the date, description, and source link, and displays a message "Come back tomorrow for a new daily challenge" along with a countdown timer or next availability time
+4. **Given** a visitor sees "Today is International Taco Day" (October 4), **When** they select "Real", **Then** the system shows whether they were correct, reveals the truth with the date, description, and source link, and displays a message "Come back tomorrow for a new daily challenge" along with a countdown timer in HH:MM:SS format (e.g., "23:45:12") that updates every second until midnight in their local timezone
 
 5. **Given** a visitor has made their guess for October 4, **When** they return to the game later on October 4 on the same device and browser, **Then** the system shows the feedback screen from their original guess (not a new question)
 
@@ -88,13 +95,14 @@ A visitor arrives at the game and is presented with the daily international day 
 8. **Given** the current date is March 8 (International Women's Day exists for this date), **When** visitors in the same timezone load the game, **Then** they all see the same daily challenge (which could be either "Today is International Women's Day" OR "Today is [some fake day]" depending on the random selection for that date)
 
 ### Edge Cases
+
 - When the visitor has already made their guess for the current day and returns on the same device/browser, the feedback screen from their original guess must be shown (no option to guess again).
 - When the day changes (based on the visitor's local timezone), the game must present a new daily challenge even if the visitor hasn't returned in 24 hours.
 - When there is no real international day available in the data pool for the current calendar date, the system must present any random fake day from the pool (not an error state).
 - When a visitor clears their browser storage/cookies and returns on the same day, they are treated as a new visitor and allowed to guess again (no server-side tracking without user accounts).
 - The game must handle timezone boundaries correctly - visitors in different timezones may see different days at the same moment in UTC time.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -108,16 +116,17 @@ A visitor arrives at the game and is presented with the daily international day 
 - **FR-008**: System MUST provide "Real" and "Fake" guess options to the visitor
 - **FR-009**: System MUST accept the visitor's guess and show immediate feedback indicating correctness
 - **FR-010**: System MUST reveal the truth (real or fake status) along with the date, description, and source/reference link after each guess
-- **FR-011**: System MUST display a message "Come back tomorrow for a new daily challenge" (or similar wording) on the feedback screen along with a countdown timer or the specific time when the next challenge becomes available
+- **FR-011**: System MUST display a message "Come back tomorrow for a new daily challenge" (or similar wording) on the feedback screen along with a countdown timer in HH:MM:SS format that updates every second showing time remaining until midnight in the visitor's local timezone
 - **FR-012**: System MUST persist the visitor's guess result for the current day on their device/browser (no user accounts)
 - **FR-013**: System MUST show the visitor their previous feedback screen when they return on the same day on the same device/browser
 - **FR-014**: System MUST NOT allow the visitor to make a new guess for a day they have already guessed on the same device/browser
 - **FR-015**: System MUST present a new daily challenge when the visitor returns on a different calendar date (based on their timezone)
-- **FR-016**: System MUST maintain an expanded pool of approximately 50-100 real international days and 50-100 fake days with calendar dates to support daily challenges (current pool from Feature 001 is insufficient - needs expansion through research)
+- **FR-016**: System MUST maintain a pool of at least 100 real international days and at least 100 fake days with calendar dates to support daily challenges
+- **FR-017**: System MUST NOT include variable or relative dates (e.g., "First Friday of June") in the international days pool
 
 ### Key Entities
 
-- **International Day**: Represents a day entry in the game pool. Contains the day name (e.g., "International Women's Day"), whether it is real or fake, the calendar date it occurs on (stored in a standard format that can be matched with JavaScript Date API), a brief description providing context, and a source/reference link. Real days must have Wikipedia entries or backing from major organizations. The pool requires expansion from approximately 10-20 days (Feature 001) to approximately 50-100 real days and 50-100 fake days with calendar dates to support daily gameplay.
+- **International Day**: Represents a day entry in the game pool. Contains the day name (e.g., "International Women's Day"), whether it is real or fake, the calendar date it occurs on (stored in MM-DD format), a brief description providing context, and a source/reference link. Real days must have Wikipedia entries or backing from major organizations. The pool requires at least 100 real days and at least 100 fake days with calendar dates to support daily gameplay.
 
 - **Daily Challenge**: Represents the challenge presented to visitors for a specific calendar date in a specific timezone. Contains the calendar date, the associated International Day from the pool, and the timezone. All visitors in the same timezone for the same calendar date see the same Daily Challenge.
 
@@ -126,15 +135,18 @@ A visitor arrives at the game and is presented with the daily international day 
 ---
 
 ## Review & Acceptance Checklist
-*GATE: Automated checks run during main() execution*
+
+_GATE: Automated checks run during main() execution_
 
 ### Content Quality
+
 - [x] No implementation details (languages, frameworks, APIs)
 - [x] Focused on user value and business needs
 - [x] Written for non-technical stakeholders
 - [x] All mandatory sections completed
 
 ### Requirement Completeness
+
 - [x] No [NEEDS CLARIFICATION] markers remain
 - [x] Requirements are testable and unambiguous
 - [x] Success criteria are measurable
@@ -144,7 +156,8 @@ A visitor arrives at the game and is presented with the daily international day 
 ---
 
 ## Execution Status
-*Updated by main() during processing*
+
+_Updated by main() during processing_
 
 - [x] User description parsed
 - [x] Key concepts extracted

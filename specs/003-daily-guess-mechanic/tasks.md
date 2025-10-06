@@ -38,6 +38,7 @@
 
 ## Path Conventions
 - **Feature co-location**: `src/features/day-guessing-game/`
+- **Daily challenge logic**: `src/features/day-guessing-game/daily-challenge/`
 - Co-locate related files: components, hooks, types, tests within feature directories
 - **Test co-location**: Unit tests MUST be placed directly next to source files (e.g., `foo.ts` + `foo.test.ts`)
 - **Integration tests**: Place in `src/features/day-guessing-game/tests/integration/`
@@ -46,75 +47,81 @@
 ## Phase 3.1: Data Types & Research
 - [ ] T001 [P] Update InternationalDay type to include `date: string | null` field (MM-DD format) in src/features/day-guessing-game/types/international-day.ts
 - [ ] T002 [P] Create DailyGameState and DailyChallenge types in src/features/day-guessing-game/types/daily-types.ts
-- [ ] T003 [P] Research and add 40-50 real UN/UNESCO international days to src/features/day-guessing-game/data/days-pool.ts (with MM-DD dates)
-- [ ] T004 [P] Research and add 40-50 fake international days to src/features/day-guessing-game/data/days-pool.ts (with null dates)
+- [ ] T003 [P] Research and add 100 real UN/UNESCO international days to src/features/day-guessing-game/data/days-pool.ts (with MM-DD dates)
+- [ ] T004 [P] Research and add 100 fake international days to src/features/day-guessing-game/data/days-pool.ts (with null dates)
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
 **Constitutional requirement (Principle II - NON-NEGOTIABLE)**
-- [ ] T005 [P] Unit test for xmur3 hash function in src/features/day-guessing-game/daily/utils/deterministic-random.test.ts
-- [ ] T006 [P] Unit test for mulberry32 PRNG in src/features/day-guessing-game/daily/utils/deterministic-random.test.ts
-- [ ] T007 [P] Unit test for getCurrentLocalDate in src/features/day-guessing-game/daily/utils/timezone-utils.test.ts
-- [ ] T008 [P] Unit test for getDailyChallenge in src/features/day-guessing-game/daily/utils/get-daily-challenge.test.ts
-- [ ] T009 [P] Unit test for localStorage wrapper getDailyState in src/features/day-guessing-game/daily/storage/daily-state-storage.test.ts
-- [ ] T010 [P] Unit test for localStorage wrapper saveDailyState in src/features/day-guessing-game/daily/storage/daily-state-storage.test.ts
-- [ ] T011 [P] Unit test for useDailyState hook in src/features/day-guessing-game/daily/hooks/use-daily-state.test.ts
+- [ ] T005 [P] Unit test for xmur3 hash function in src/features/day-guessing-game/daily-challenge/utils/deterministic-random.test.ts
+- [ ] T006 [P] Unit test for mulberry32 PRNG in src/features/day-guessing-game/daily-challenge/utils/deterministic-random.test.ts
+- [ ] T007 [P] Unit test for getCurrentLocalDate in src/features/day-guessing-game/daily-challenge/utils/timezone-utils.test.ts
+- [ ] T008 [P] Unit test for getDailyChallenge in src/features/day-guessing-game/daily-challenge/utils/get-daily-challenge.test.ts
+- [ ] T009 [P] Unit test for localStorage wrapper getDailyState in src/features/day-guessing-game/daily-challenge/storage/daily-state-storage.test.ts
+- [ ] T010 [P] Unit test for localStorage wrapper saveDailyState in src/features/day-guessing-game/daily-challenge/storage/daily-state-storage.test.ts
+- [ ] T011 [P] Unit test for useDailyState hook in src/features/day-guessing-game/daily-challenge/hooks/use-daily-state.test.ts
 - [ ] T012 [P] Integration test for daily challenge flow (new day → guess → revisit same day) in src/features/day-guessing-game/tests/integration/daily-flow.test.tsx
 - [ ] T013 [P] Integration test for determinism (same date produces same challenge) in src/features/day-guessing-game/tests/integration/daily-flow.test.tsx
 - [ ] T014 [P] Integration test for day transition (midnight boundary) in src/features/day-guessing-game/tests/integration/daily-flow.test.tsx
+- [ ] T014a [P] Unit test for countdown timer component in src/features/day-guessing-game/components/countdown-timer.test.tsx
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
-- [ ] T015 [P] Implement xmur3 hash function in src/features/day-guessing-game/daily/utils/deterministic-random.ts
-- [ ] T016 [P] Implement mulberry32 PRNG in src/features/day-guessing-game/daily/utils/deterministic-random.ts
-- [ ] T017 [P] Implement getCurrentLocalDate using Intl.DateTimeFormat('sv-SE') in src/features/day-guessing-game/daily/utils/timezone-utils.ts
-- [ ] T018 Implement getDailyChallenge logic (date-seeded random selection) in src/features/day-guessing-game/daily/utils/get-daily-challenge.ts (depends on T015, T016, T017)
-- [ ] T019 [P] Implement localStorage wrapper getDailyState in src/features/day-guessing-game/daily/storage/daily-state-storage.ts
-- [ ] T020 [P] Implement localStorage wrapper saveDailyState in src/features/day-guessing-game/daily/storage/daily-state-storage.ts
-- [ ] T021 Implement useDailyState hook in src/features/day-guessing-game/daily/hooks/use-daily-state.ts (depends on T018, T019, T020)
+- [ ] T015 [P] Implement xmur3 hash function in src/features/day-guessing-game/daily-challenge/utils/deterministic-random.ts
+- [ ] T016 [P] Implement mulberry32 PRNG in src/features/day-guessing-game/daily-challenge/utils/deterministic-random.ts
+- [ ] T017 [P] Implement getCurrentLocalDate using Intl.DateTimeFormat('sv-SE') in src/features/day-guessing-game/daily-challenge/utils/timezone-utils.ts
+- [ ] T018 Implement getDailyChallenge logic (date-seeded random selection) in src/features/day-guessing-game/daily-challenge/utils/get-daily-challenge.ts (depends on T015, T016, T017)
+- [ ] T019 [P] Implement localStorage wrapper getDailyState in src/features/day-guessing-game/daily-challenge/storage/daily-state-storage.ts
+- [ ] T020 [P] Implement localStorage wrapper saveDailyState in src/features/day-guessing-game/daily-challenge/storage/daily-state-storage.ts
+- [ ] T021 Implement useDailyState hook in src/features/day-guessing-game/daily-challenge/hooks/use-daily-state.ts (depends on T018, T019, T020)
 
 ## Phase 3.4: UI Integration
 - [ ] T022 Update GameContainer to use useDailyState and show daily challenge in src/features/day-guessing-game/components/game-container.tsx (depends on T021)
 - [ ] T023 Update day-display to show "Today is [Day Name]" prompt in src/features/day-guessing-game/components/day-display.tsx
-- [ ] T024 Update FeedbackPanel to include "Come back tomorrow" message and countdown timer in src/features/day-guessing-game/components/feedback-panel.tsx
+- [ ] T024 Update FeedbackPanel to include "Come back tomorrow" message in src/features/day-guessing-game/components/feedback-panel.tsx
+- [ ] T024b Implement countdown timer component in HH:MM:SS format that updates every second until midnight local time in src/features/day-guessing-game/components/countdown-timer.tsx (depends on T014a)
+- [ ] T024c Integrate countdown timer into FeedbackPanel in src/features/day-guessing-game/components/feedback-panel.tsx (depends on T024b)
 - [ ] T025 Update game-container.test.tsx unit test for daily mode behavior in src/features/day-guessing-game/components/game-container.test.tsx
 
 ## Phase 3.5: Polish & Validation
-- [ ] T026 [P] Validate days-pool.ts has 50-100 real days with valid MM-DD dates in src/features/day-guessing-game/data/days-pool.test.ts
-- [ ] T027 [P] Validate days-pool.ts has 50-100 fake days with null dates in src/features/day-guessing-game/data/days-pool.test.ts
+- [ ] T026 [P] Validate days-pool.ts has at least 100 real days with valid MM-DD dates in src/features/day-guessing-game/data/days-pool.test.ts
+- [ ] T027 [P] Validate days-pool.ts has at least 100 fake days with null dates in src/features/day-guessing-game/data/days-pool.test.ts
 - [ ] T028 [P] Performance test: daily challenge selection < 10ms in src/features/day-guessing-game/tests/integration/daily-flow.test.tsx
-- [ ] T029 [P] Edge case test: localStorage disabled/corrupted in src/features/day-guessing-game/daily/storage/daily-state-storage.test.ts
-- [ ] T030 [P] Edge case test: no real day for current date (fallback to fake) in src/features/day-guessing-game/daily/utils/get-daily-challenge.test.ts
+- [ ] T029 [P] Edge case test: localStorage disabled/corrupted in src/features/day-guessing-game/daily-challenge/storage/daily-state-storage.test.ts
+- [ ] T030 [P] Edge case test: no real day for current date (fallback to fake) in src/features/day-guessing-game/daily-challenge/utils/get-daily-challenge.test.ts
 - [ ] T031 Manual testing following quickstart.md scenarios (all 6 test scenarios from quickstart)
 
 ## Dependencies
 - Data types (T001-T004) before all other tasks
-- Tests (T005-T014) before implementation (T015-T021)
+- Tests (T005-T014a) before implementation (T015-T021)
 - T015, T016 (random functions) before T018 (daily challenge)
 - T017 (timezone utils) before T018 (daily challenge)
 - T018 (daily challenge) before T021 (hook)
 - T019, T020 (storage) before T021 (hook)
 - T021 (hook) before T022 (UI integration)
+- T014a (countdown timer test) before T024b (countdown timer implementation)
+- T024b (countdown timer) before T024c (integration)
 - T022 (GameContainer) before T025 (GameContainer test)
-- Implementation (T015-T024) before polish (T026-T031)
+- Implementation (T015-T024c) before polish (T026-T031)
 
 ## Parallel Example
 ```
-# Launch T005-T014 together (different test files):
-Task: "Unit test for xmur3 hash function in src/features/day-guessing-game/daily/utils/deterministic-random.test.ts"
-Task: "Unit test for mulberry32 PRNG in src/features/day-guessing-game/daily/utils/deterministic-random.test.ts"
-Task: "Unit test for getCurrentLocalDate in src/features/day-guessing-game/daily/utils/timezone-utils.test.ts"
-Task: "Unit test for getDailyChallenge in src/features/day-guessing-game/daily/utils/get-daily-challenge.test.ts"
-Task: "Unit test for localStorage wrapper getDailyState in src/features/day-guessing-game/daily/storage/daily-state-storage.test.ts"
-Task: "Unit test for localStorage wrapper saveDailyState in src/features/day-guessing-game/daily/storage/daily-state-storage.test.ts"
-Task: "Unit test for useDailyState hook in src/features/day-guessing-game/daily/hooks/use-daily-state.test.ts"
+# Launch T005-T014a together (different test files):
+Task: "Unit test for xmur3 hash function in src/features/day-guessing-game/daily-challenge/utils/deterministic-random.test.ts"
+Task: "Unit test for mulberry32 PRNG in src/features/day-guessing-game/daily-challenge/utils/deterministic-random.test.ts"
+Task: "Unit test for getCurrentLocalDate in src/features/day-guessing-game/daily-challenge/utils/timezone-utils.test.ts"
+Task: "Unit test for getDailyChallenge in src/features/day-guessing-game/daily-challenge/utils/get-daily-challenge.test.ts"
+Task: "Unit test for localStorage wrapper getDailyState in src/features/day-guessing-game/daily-challenge/storage/daily-state-storage.test.ts"
+Task: "Unit test for localStorage wrapper saveDailyState in src/features/day-guessing-game/daily-challenge/storage/daily-state-storage.test.ts"
+Task: "Unit test for useDailyState hook in src/features/day-guessing-game/daily-challenge/hooks/use-daily-state.test.ts"
 Task: "Integration test for daily challenge flow in src/features/day-guessing-game/tests/integration/daily-flow.test.tsx"
+Task: "Unit test for countdown timer component in src/features/day-guessing-game/components/countdown-timer.test.tsx"
 ```
 
 ## Notes
 - [P] tasks = different files/features, no dependencies
 - Verify tests fail before implementing (TDD principle)
 - Use pure functions for deterministic-random, timezone-utils, get-daily-challenge
-- Follow feature co-location: all daily challenge code in `src/features/day-guessing-game/daily/`
+- Follow feature co-location: all daily challenge code in `src/features/day-guessing-game/daily-challenge/`
 - Co-locate unit tests next to source files (e.g., `foo.ts` + `foo.test.ts`)
 - Place integration tests in `src/features/day-guessing-game/tests/integration/`
 - Integration tests MUST use real user interactions (button clicks, form inputs), NOT manual hook manipulation
@@ -134,4 +141,4 @@ Task: "Integration test for daily challenge flow in src/features/day-guessing-ga
 - [x] Each task specifies exact file path
 - [x] No task modifies same file as another [P] task
 - [x] Integration test scenarios from quickstart.md covered (T012, T013, T014, T031)
-- [x] Data expansion tasks (50-100 real + 50-100 fake days) included (T003, T004, T026, T027)
+- [x] Data expansion tasks (100 total real + 100 total fake days) included (T003, T004, T026, T027)

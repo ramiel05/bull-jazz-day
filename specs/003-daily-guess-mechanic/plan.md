@@ -31,7 +31,7 @@
 - Phase 3-4: Implementation execution (manual or via tools)
 
 ## Summary
-Transform the game from instant question flow to a daily challenge format where all players in the same timezone see the same international day question each day. The game uses deterministic date-based randomization to ensure consistency and persists results in browser storage. Requires expanding the pool of real international days to 50-100 entries to support daily gameplay.
+Transform the game from instant question flow to a daily challenge format where all players in the same timezone see the same international day question each day. The game uses deterministic date-based randomization to ensure consistency and persists results in browser storage. Requires expanding the pool of international days to at least 100 real days and at least 100 fake days to support daily gameplay.
 
 ## Technical Context
 **Language/Version**: TypeScript 5.x
@@ -41,8 +41,8 @@ Transform the game from instant question flow to a daily challenge format where 
 **Target Platform**: Web browser (client-side only)
 **Project Type**: single (Next.js web app)
 **Performance Goals**: <100ms UI response time, instant date/timezone calculations
-**Constraints**: Client-side only (no backend), deterministic randomization using date as seed, browser storage for state persistence
-**Scale/Scope**: 50-100 real international days with calendar dates, single daily challenge per timezone
+**Constraints**: Client-side only (no backend), deterministic randomization using date as seed, browser storage for state persistence, no variable/relative dates allowed
+**Scale/Scope**: At least 100 real international days and at least 100 fake days with calendar dates, single daily challenge per timezone
 
 ## Constitution Check
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
@@ -114,9 +114,9 @@ src/
 │   └── day-guessing-game/
 │       ├── components/           # Existing game UI components
 │       ├── data/
-│       │   ├── days-pool.ts      # Existing: needs expansion to 50-100 real + 50-100 fake days
+│       │   ├── days-pool.ts      # Existing: needs expansion to 100 real + 100 fake days
 │       │   └── days-pool.test.ts
-│       ├── daily/                # New: daily challenge logic
+│       ├── daily-challenge/      # New: daily challenge logic
 │       │   ├── utils/
 │       │   │   ├── get-daily-challenge.ts
 │       │   │   ├── get-daily-challenge.test.ts
@@ -146,7 +146,7 @@ tests/
 └── contract/                     # N/A for this feature (client-side only)
 ```
 
-**Structure Decision**: Single project structure with feature co-location. All daily challenge logic will be organized under `src/features/day-guessing-game/daily/` with utils, storage, and hooks subdirectories. Unit tests are co-located next to source files. Integration tests are in dedicated `tests/integration/` directory within the feature.
+**Structure Decision**: Single project structure with feature co-location. All daily challenge logic will be organized under `src/features/day-guessing-game/daily-challenge/` with utils, storage, and hooks subdirectories. Unit tests are co-located next to source files. Integration tests are in dedicated `tests/integration/` directory within the feature.
 
 ## Phase 0: Outline & Research
 1. **Extract unknowns from Technical Context** above:
@@ -210,7 +210,8 @@ tests/
 - Generate tasks from Phase 1 design docs (data model, quickstart, research findings)
 - Core utilities → pure function tasks [P] (deterministic-random, timezone-utils, get-daily-challenge)
 - Storage layer → localStorage wrapper tasks [P]
-- Data expansion → extend days-pool tasks (50-100 real days)
+- Data expansion → extend days-pool tasks (at least 100 real days)
+- Data expansion → extend days-pool tasks (at least 100 fake days)
 - React hooks → daily state management tasks
 - Component updates → integrate daily mode into existing game flow
 - Integration tests → daily flow scenarios from quickstart
@@ -219,8 +220,8 @@ tests/
 **Task Categories**:
 1. **Data Layer** (parallel):
    - Update InternationalDay type with "MM-DD" date format
-   - Add 40-90 real international days to pool (directly in days-pool.ts)
-   - Add 40-90 fake days to pool (directly in days-pool.ts)
+   - Add 100 real international days to pool (directly in days-pool.ts)
+   - Add 100 fake days to pool (directly in days-pool.ts)
    - Unit tests for extended pool
 
 2. **Pure Utilities** (parallel):

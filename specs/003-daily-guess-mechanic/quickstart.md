@@ -51,10 +51,10 @@ console.log(state);
 // Should show:
 // {
 //   date: "2025-10-05",  // today's date
-//   hasGuessed: true,
 //   guessedCorrectly: true/false,
 //   timestamp: 1728086400000
 // }
+// Note: hasGuessed can be derived as guessedCorrectly !== null
 ```
 
 ---
@@ -76,7 +76,7 @@ console.log(state);
 // localStorage should still have same state
 const state = JSON.parse(localStorage.getItem('daily-game-state'));
 console.log(state.date); // Should match today's date
-console.log(state.hasGuessed); // Should be true
+console.log(state.guessedCorrectly); // Should be true or false (not null)
 ```
 
 ---
