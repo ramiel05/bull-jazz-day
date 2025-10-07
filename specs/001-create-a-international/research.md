@@ -1,7 +1,8 @@
-# Research: International Day Guessing Game
+# Research: International Day Guessing Game (Daily Challenge)
 
 **Feature**: 001-create-a-international
-**Date**: 2025-09-30
+**Created**: 2025-09-30
+**Updated**: 2025-10-07 (merged with 003-daily-guess-mechanic)
 
 ## Technical Context Discovery
 
@@ -65,18 +66,50 @@
 
 ### 3. Randomization Strategy
 
-**Decision**: `Math.random()` with array shuffling
+**Decision**: Deterministic PRNG using xmur3 + mulberry32
 **Rationale**:
-- Sufficient randomness for game purposes
-- No cryptographic security needed
-- Simple, deterministic, testable
-- Compatible with React Server Components
+- Deterministic: Same date always produces same result for all users
+- No dependencies: Pure JavaScript implementation (~15 lines each)
+- High quality: mulberry32 passes all tests of gjrand testing suite
+- Fast: Extremely performant for client-side use
+- Enables timezone-consistent daily challenges
+
+**Implementation**:
+```typescript
+// Hash function to convert string to numeric seed
+function xmur3(str: string) {
+  for (var i = 0, h = 1779033703 ^ str.length; i < str.length; i++)
+    (h = Math.imul(h ^ str.charCodeAt(i), 3432918353)),
+      (h = (h << 13) | (h >>> 19));
+  return function () {
+    (h = Math.imul(h ^ (h >>> 16), 2246822507)),
+      (h = Math.imul(h ^ (h >>> 13), 3266489909));
+    return (h ^= h >>> 16) >>> 0;
+  };
+}
+
+// Simple 32-bit PRNG
+function mulberry32(a: number) {
+  return function () {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// Usage for daily challenge
+const dateString = "2025-10-04";
+const seed = xmur3(dateString);
+const random = mulberry32(seed());
+const randomValue = random(); // 0-1 deterministic for this date
+```
 
 **Alternatives Considered**:
-- `crypto.getRandomValues()`: Overkill for non-security use case
-- Server-side random: Contradicts client-only architecture
-
-**Implementation**: Pure function `selectRandomDay(pool: InternationalDay[]): InternationalDay`
+- `Math.random()`: Non-deterministic, different users would see different challenges
+- `seedrandom` library: Adds dependency, overkill for simple use case
+- Simple hash-based approach: Poor randomness distribution
 
 ### 4. Testing Framework
 
@@ -245,22 +278,148 @@ src/
 
 ## Known Constraints
 
-1. **No Persistence**: FR-011 - refresh clears state (simplifies architecture)
+1. **localStorage Persistence**: Daily state must persist across page refreshes
 2. **No Backend**: Client-only implementation (reduces complexity)
-3. **Fixed Pool**: 10-20 days for MVP (expandable later)
+3. **Large Pool**: 100+ real and 100+ fake days for daily challenges
 4. **TDD Mandatory**: All code test-first (constitutional)
+5. **Deterministic Challenges**: Same date must produce same challenge for all users in timezone
+6. **No Variable Dates**: Cannot use relative dates like "First Friday of June"
+
+## Additional Research: Daily Challenge Mechanics
+
+### 1. Browser localStorage for Daily State
+
+**Decision**: Create typed localStorage wrapper with JSON serialization
+
+**Rationale**:
+- Type safety: TypeScript wrapper prevents runtime errors
+- Structured data: JSON allows storing complex objects
+- Date comparison: Easy to detect when day changes
+- Graceful degradation: Can handle missing/corrupt data
+
+**Implementation Pattern**:
+```typescript
+interface DailyGameState {
+  date: string; // YYYY-MM-DD
+  guessedCorrectly: boolean | null;
+  timestamp: number;
+}
+
+class LocalStorageHelper {
+  static get<T>(key: string, defaultValue: T): T {
+    try {
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : defaultValue;
+    } catch (error) {
+      console.error(`Error reading from localStorage: ${error}`);
+      return defaultValue;
+    }
+  }
+
+  static set<T>(key: string, value: T): void {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.error(`Error writing to localStorage: ${error}`);
+    }
+  }
+}
+```
+
+**Best Practices**:
+1. Date-based invalidation: Compare stored date with current date
+2. Error handling: Try-catch blocks for localStorage access
+3. Type safety: Generic types for all operations
+4. Default values: Graceful fallback when data missing
+5. Timestamp tracking: Useful for debugging timezone issues
+
+**Edge Cases Handled**:
+- localStorage disabled: App continues, may lose state on refresh
+- Corrupted JSON: Catches parse errors, returns default
+- Timezone changes: Compares date strings, not timestamps
+
+**Alternatives Considered**:
+- Raw localStorage calls: No type safety, repetitive error handling
+- Third-party library (typed-local-store): Adds dependency, overkill
+- Cookies: Size limits, sent with requests, unnecessary complexity
+
+### 2. Timezone Handling in JavaScript
+
+**Decision**: Use Intl.DateTimeFormat with 'sv-SE' locale for YYYY-MM-DD format
+
+**Rationale**:
+- Built-in API: No dependencies required
+- Automatic timezone handling: Uses browser's timezone automatically
+- ISO 8601 format: Swedish locale produces YYYY-MM-DD natively
+- Simple and reliable: One-liner solution
+
+**Implementation**:
+```typescript
+function getCurrentLocalDate(): string {
+  const date = new Date();
+  return new Intl.DateTimeFormat("sv-SE").format(date);
+  // Returns: "2025-10-05" in user's local timezone
+}
+```
+
+**Why This Works**:
+- sv-SE locale: Swedish date format is YYYY-MM-DD (ISO 8601)
+- Local timezone: Browser automatically converts UTC to local time
+- Consistent: Works across all browsers and platforms
+- Future-proof: Part of ECMAScript Internationalization API
+
+**Important Notes**:
+- Midnight transitions: Date changes at midnight in user's local timezone
+- Same experience: All users in same timezone see same daily challenge
+- Different timezones: Users in different timezones may see different days at same UTC time
+- Wordle pattern: This matches how Wordle handles daily challenges
+
+**Alternatives Considered**:
+- Manual formatting with padStart(): More verbose, manual padding required
+- toISOString() with timezone offset hack: Hacky, confusing to maintain
+- date-fns or moment.js: Unnecessary dependency for simple use case
+
+### 3. International Days Data Sources
+
+**Decision**: Use UN and UNESCO official lists as primary sources
+
+**Rationale**:
+- Authoritative: UN/UNESCO days are officially recognized
+- Well-documented: Each day has clear definition and purpose
+- Diverse: 100+ days covering various causes and topics
+- Stable: Dates don't change year-to-year
+- Cultural significance: Globally recognized observances
+
+**Primary Sources**:
+1. UN Official List (50+ days): https://www.un.org/en/observances/list-days-weeks
+2. UNESCO International Days (40+ days): https://www.unesco.org/en/days/list
+3. InternationalDays.org (100+ days): https://www.internationaldays.org/calendar
+
+**Data Collection Strategy**:
+- Manual curation from official sources
+- Create TypeScript data structure with MM-DD dates
+- Include: date, name, description, source
+- Ensure coverage across all 12 months
+- Create equivalent fake days with creative/humorous names
+
+**Notable Facts**:
+- March 21: Most international days (5 different observances)
+- June: Month with most total international days
+- Coverage: Can easily get 100+ days from official sources
+- All days recur annually on same date
 
 ## Migration Path (Future Enhancements)
 
 **Not in MVP, but designed for**:
-- Score tracking: Add localStorage
-- Expanded pool: Move to JSON file or API
-- Analytics: Track guess accuracy (privacy-respecting)
+- Score tracking: Extend localStorage with historical results
+- Expanded pool: Move to JSON file or API for easier updates
 - Sharing: Add share buttons with results
-- Difficulty modes: Filter pool by category
+- Streak counters: Track consecutive correct guesses
+- Leaderboards: Optional server integration
 
-**Architecture supports** these additions without refactoring core game logic (pure functions, clear data model).
+**Architecture supports** these additions without refactoring core game logic (pure functions, clear data model, separated daily challenge logic).
 
 ---
 
 **Research Complete**: All technical unknowns resolved. Ready for Phase 1 (Design & Contracts).
+**Last Updated**: 2025-10-07

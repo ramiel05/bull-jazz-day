@@ -1,62 +1,85 @@
-# Feature Specification: International Day Guessing Game
+# Feature Specification: International Day Guessing Game (Daily Challenge)
 
 **Feature Branch**: `001-create-a-international`
 **Created**: 2025-09-30
-**Status**: Draft
-**Input**: User description: "create a international day of X guessing game. there are many real days like international women's day, earth day, etc. and there are many real days that are silly like international donut day. there are so many days now it is getting ridiculous. the game should have a pool of real and fake but plausible, sometimes just funny, fake days. visitors can guess if the day is real or fake. don't be over eager in adding extra features, keep the spec to be just this game, other obvious features can come in a later spec."
+**Updated**: 2025-10-07 (merged with 003-daily-guess-mechanic)
+**Status**: Active
+**Original Input**: "create a international day of X guessing game. there are many real days like international women's day, earth day, etc. and there are many real days that are silly like international donut day. there are so many days now it is getting ridiculous. the game should have a pool of real and fake but plausible, sometimes just funny, fake days. visitors can guess if the day is real or fake. don't be over eager in adding extra features, keep the spec to be just this game, other obvious features can come in a later spec."
+
+**Updated Input** (from 003-daily-guess-mechanic): "daily guess mechanic. change the game from having new questions given immedietly after guessing, to having one daily question. every user in the same time zone gets the same question so they can compare and compete with their friends and socials. don't worry about a sharing feature for this spec. every other game mechanic and UX stays the same, just the \"pace\" of questions, and that all players get the same question for the day are different. timezone should be based on users locale. if a user has made their guess and they come to the page again on the same device and browser (i.e. no user accounts), then the game will tell them they have already made their guess for the day and their result, it will do this by just continuing to show to feedback screen from the original moment they made their guess. expand the feedback screen to tell the user will be told to come back tomorrow for a new day to guess. the day in question must line line up with the actual date time, tweak the guess prompting message to say something like \"today is X day\", in order to be able to do this we need to do research to get a lot more days in the days pool for true days, it is ok for now if not every single day of the year has a possible true day, if there is no true day in the data available for the current day then pick any random fake day."
 
 ## Clarifications
 
-### Session 2025-09-30
-- Q: When a visitor refreshes the page mid-game, what should happen? → A: Start completely fresh - new random day, no memory of previous guesses
-- Q: When a visitor has seen all days in the pool (played through everything), what should happen next? → A: Days repeat - allow seeing the same days again in random order
-- Q: How large should the initial pool of days be (combined real + fake)? → A: Small starter set (~10-20 total days) for MVP
+### Session 2025-09-30 (Original Game Mechanics)
 - Q: What makes an international day "real" for this game? → A: Any day with a Wikipedia entry or major organization backing
 - Q: After revealing if a guess is correct/incorrect, should the game show additional information about the day? → A: Show date + brief description/context + source/reference link
+
+### Session 2025-10-05 (Daily Challenge Mechanics)
+- Q: When a real international day exists for the current calendar date (e.g., March 8 = International Women's Day), should the daily challenge always show that specific real day, or should the system randomly choose between showing the real day OR a fake day? → A: Randomly choose: either show the real day for that date OR show any random fake day from the pool
+- Q: When a visitor clears their browser storage/cookies and returns on the same day, what should happen? → A: Allow them to guess again (treat as new visitor)
+- Q: When selecting the daily challenge (real or fake day), how should the randomness be deterministic to ensure all visitors in the same timezone see the same challenge? → A: Use the calendar date as a seed for randomization (e.g., "2025-10-04" → deterministic random selection)
+- Q: When the feedback screen displays "Come back tomorrow for a new daily challenge", should it also show a countdown timer or the specific time when the next challenge becomes available? → A: Yes - show a countdown timer until next challenge
 
 ## User Scenarios & Testing
 
 ### Primary User Story
-A visitor arrives at the game and is presented with an "International Day of X" name. They think about whether this sounds like a real internationally recognized day or a made-up one. They make their guess (real or fake), and the system immediately tells them if they were correct and reveals the truth. They can then continue to the next day to keep playing.
+A visitor arrives at the game and is presented with the daily international day of X challenge. The prompt reads "Today is [Day Name]" where the day shown matches the current calendar date in their timezone. They guess whether it's real or fake, see immediate feedback, and if they return later the same day on the same device, they see their previous result and are informed to come back tomorrow for a new challenge. All visitors in the same timezone see the same daily challenge, enabling them to compare results with friends and on social media.
 
 ### Acceptance Scenarios
 *Write scenarios that can be directly converted to tests (support TDD)*
 
-1. **Given** a visitor loads the game, **When** the page loads, **Then** they see an international day name displayed with options to guess "Real" or "Fake"
+1. **Given** a visitor in EST timezone loads the game on October 4, 2025, **When** the page loads, **Then** they see a prompt reading "Today is [Day Name]" where the day corresponds to October 4, along with "Real" or "Fake" guess options
 
-2. **Given** a visitor sees "International Women's Day", **When** they select "Real", **Then** the system shows "Correct! This is a real international day" along with the date (March 8), a brief description, and a source/reference link
+2. **Given** another visitor in EST timezone loads the game on October 4, 2025, **When** the page loads, **Then** they see the exact same day name as the first visitor
 
-3. **Given** a visitor sees "International Sock Puppet Appreciation Day", **When** they select "Fake", **Then** the system shows "Correct! This day was made up" (assuming it's fake in the pool)
+3. **Given** a visitor in PST timezone loads the game on October 4, 2025, **When** the page loads, **Then** they see a day name that corresponds to October 4 in PST (which may differ from EST if it's a different calendar date in PST)
 
-4. **Given** a visitor has just received feedback on their guess, **When** they choose to continue, **Then** the system presents a different international day
+4. **Given** a visitor sees "Today is International Taco Day" (October 4), **When** they select "Real", **Then** the system shows whether they were correct, reveals the truth with the date, description, and source link, and displays a message "Come back tomorrow for a new daily challenge" along with a countdown timer in HH:MM:SS format (e.g., "23:45:12") that updates every second until midnight in their local timezone
 
-5. **Given** a visitor sees "International Donut Day", **When** they select "Fake" thinking it's too silly, **Then** the system shows "Incorrect! This is actually a real international day"
+5. **Given** a visitor has made their guess for October 4, **When** they return to the game later on October 4 on the same device and browser, **Then** the system shows the feedback screen from their original guess (not a new question)
 
-6. **Given** a visitor plays multiple rounds, **When** they continue to the next day, **Then** each day shown is randomly selected from the pool
+6. **Given** a visitor has made their guess for October 4, **When** they return on October 5, **Then** the system presents a new daily challenge corresponding to October 5
+
+7. **Given** the current date is October 4 and there is no real international day in the data pool for October 4, **When** the visitor loads the game, **Then** the system presents a random fake day from the pool with the prompt "Today is [Fake Day Name]"
+
+8. **Given** the current date is March 8 (International Women's Day exists for this date), **When** visitors in the same timezone load the game, **Then** they all see the same daily challenge (which could be either "Today is International Women's Day" OR "Today is [some fake day]" depending on the random selection for that date)
 
 ### Edge Cases
-- When the visitor has seen all days in the pool within a session, days can repeat and be shown again in random order (infinite gameplay).
-- When the visitor refreshes the page, the game starts completely fresh with a new random day and no memory of previous guesses or game state.
+- When the visitor has already made their guess for the current day and returns on the same device/browser, the feedback screen from their original guess must be shown (no option to guess again).
+- When the day changes (based on the visitor's local timezone), the game must present a new daily challenge even if the visitor hasn't returned in 24 hours.
+- When there is no real international day available in the data pool for the current calendar date, the system must present any random fake day from the pool (not an error state).
+- When a visitor clears their browser storage/cookies and returns on the same day, they are treated as a new visitor and allowed to guess again (no server-side tracking without user accounts).
+- The game must handle timezone boundaries correctly - visitors in different timezones may see different days at the same moment in UTC time.
 
 ## Requirements
 
 ### Functional Requirements
 
-- **FR-001**: System MUST display one international day name at a time to the visitor
-- **FR-002**: System MUST provide two options for the visitor: "Real" and "Fake"
-- **FR-003**: System MUST accept the visitor's guess (Real or Fake)
-- **FR-004**: System MUST immediately show feedback indicating whether the guess was correct or incorrect
-- **FR-005**: System MUST reveal the truth (whether the day is actually real or fake) after each guess, along with additional context: the actual date (for real days), a brief description, and a source/reference link
-- **FR-006**: System MUST provide a way for the visitor to continue to the next day after receiving feedback
-- **FR-007**: System MUST maintain a pool of real international days (both serious ones like International Women's Day and silly ones like International Donut Day) - initial MVP pool approximately 5-10 real days
-- **FR-008**: System MUST maintain a pool of fake but plausible international days (some plausible, some humorous) - initial MVP pool approximately 5-10 fake days
-- **FR-009**: System MUST randomly select days from the combined pool of real and fake days (days may repeat after all have been seen)
-- **FR-010**: System MUST ensure each presented day includes enough context that it's recognizable (e.g., "International Day of X" format)
-- **FR-011**: System MUST NOT persist game state across page refreshes (each refresh starts a completely new game session)
+- **FR-001**: System MUST determine the visitor's timezone based on their locale
+- **FR-002**: System MUST determine the current calendar date in the visitor's timezone
+- **FR-003**: System MUST display one international day challenge per calendar date
+- **FR-004**: System MUST ensure all visitors in the same timezone see the same daily challenge for the same calendar date by using the calendar date as a deterministic seed for challenge selection
+- **FR-005**: System MUST display the challenge prompt in the format "Today is [Day Name]" where the day name corresponds to the current calendar date
+- **FR-006**: System MUST randomly choose between showing a real international day (if one exists for the current calendar date) OR showing a random fake day from the pool
+- **FR-007**: System MUST select any random fake day from the pool when no real international day exists for the current calendar date (fallback behavior)
+- **FR-008**: System MUST provide "Real" and "Fake" guess options to the visitor
+- **FR-009**: System MUST accept the visitor's guess and show immediate feedback indicating correctness
+- **FR-010**: System MUST reveal the truth (real or fake status) along with the date, description, and source/reference link after each guess
+- **FR-011**: System MUST display a message "Come back tomorrow for a new daily challenge" (or similar wording) on the feedback screen along with a countdown timer in HH:MM:SS format that updates every second showing time remaining until midnight in the visitor's local timezone
+- **FR-012**: System MUST persist the visitor's guess result for the current day on their device/browser (no user accounts)
+- **FR-013**: System MUST show the visitor their previous feedback screen when they return on the same day on the same device/browser
+- **FR-014**: System MUST NOT allow the visitor to make a new guess for a day they have already guessed on the same device/browser
+- **FR-015**: System MUST present a new daily challenge when the visitor returns on a different calendar date (based on their timezone)
+- **FR-016**: System MUST maintain a pool of at least 100 real international days and at least 100 fake days with calendar dates to support daily challenges
+- **FR-017**: System MUST NOT include variable or relative dates (e.g., "First Friday of June") in the international days pool
 
 ### Key Entities
 
-- **International Day**: Represents a day entry in the game. Contains the day name (e.g., "International Women's Day", "International Donut Day", "International Procrastination Day"), whether it is real or fake, the actual date it occurs on (for real days, e.g., March 8 for International Women's Day), a brief description providing context, and a source/reference link (URL to Wikipedia, UN page, or organization backing the day). A "real" day is defined as any international day with a Wikipedia entry or backing from a major organization (UN, NGO, industry groups, etc.).
+- **International Day**: Represents a day entry in the game pool. Contains the day name (e.g., "International Women's Day"), whether it is real or fake, the calendar date it occurs on (stored in MM-DD format), a brief description providing context, and a source/reference link. Real days must have Wikipedia entries or backing from major organizations. The pool requires at least 100 real days and at least 100 fake days with calendar dates to support daily gameplay.
+
+- **Daily Challenge**: Represents the challenge presented to visitors for a specific calendar date in a specific timezone. Contains the calendar date, the associated International Day from the pool, and the timezone. All visitors in the same timezone for the same calendar date see the same Daily Challenge.
+
+- **Visitor Guess**: Represents a visitor's guess for a specific Daily Challenge on their device/browser. Contains the calendar date, the guessed answer (Real or Fake), whether the guess was correct, and a timestamp. Persisted locally on the visitor's device (no user accounts). Used to determine whether to show a new challenge or the previous feedback screen.
 
 ## Review & Acceptance Checklist
 

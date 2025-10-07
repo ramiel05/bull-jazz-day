@@ -1,9 +1,12 @@
-# Feature Specification: Streak Counter
+# Feature Specification: Daily Streak Counter
 
 **Feature Branch**: `002-streak-counter-consecutive`
 **Created**: 2025-10-01
-**Status**: Draft
+**Updated**: 2025-10-07 (aligned with daily challenge mechanics from spec 001)
+**Status**: Active
 **Input**: User description: "Streak counter. Consecutive correct guesses add to streak counter, a single incorrect guess resets to zero. Have milestone markers at 3, 5, 10, 15, 20, 30, 50, 100, at the milestones signal it in some way, maybe changed color streak counter and a emoji or small animation, open to suggestions."
+
+**Context**: This feature integrates with the daily challenge game (spec 001) where users get one guess per day. Streak now represents consecutive DAYS with correct guesses, not consecutive guesses within a session.
 
 ## Execution Flow (main)
 ```
@@ -56,70 +59,105 @@ When creating this spec from a user prompt:
 
 ## Clarifications
 
-### Session 2025-10-01
-- Q: Should the streak counter persist across browser sessions (page refresh, closing/reopening the app)? → A: Reset to 0 on every session start (ephemeral, in-memory only)
-- Q: How long should the milestone celebration visual effects remain visible? → A: Quick flash (<1 second) followed by permanent color change to milestone-specific color for rest of session
+### Session 2025-10-01 (Original)
+- Q: How long should the milestone celebration visual effects remain visible? → A: Quick flash (<1 second) followed by permanent color change to milestone-specific color
 - Q: What visual elements should be included in the milestone celebration (beyond the color change)? → A: Animation only (scale/pulse effect on the counter)
 - Q: Should the system track and display the user's highest streak ever achieved? → A: Yes, display "Best: X" alongside current streak
 - Q: Should different milestone levels have different colors, or progressively intensifying shades? → A: Distinct colors per milestone (e.g., 3=blue, 5=green, 10=purple, etc.)
+
+### Session 2025-10-07 (Daily Challenge Integration)
+- Q: Should the streak counter persist across browser sessions (page refresh, closing/reopening the app)? → A: Yes, persist in localStorage (changed from original "ephemeral" decision to align with daily challenge mechanics)
+- Q: What happens to streak when user skips a day (e.g., guesses correctly on Day 1, doesn't visit on Day 2, returns on Day 3)? → A: Streak resets to 0 (to incentivize daily engagement)
+- Q: What happens if user makes a correct guess on Day 1, then returns multiple times on Day 1? → A: Streak stays at 1 (only increments once per calendar date)
+- Q: How is "consecutive days" defined - calendar days in user's timezone, or 24-hour periods? → A: Calendar days in user's timezone (aligns with daily challenge date boundaries)
 
 ---
 
 ## User Scenarios & Testing *(mandatory)*
 
 ### Primary User Story
-A user playing the guessing game wants to track their success through consecutive correct guesses. As they guess correctly multiple times in a row, their streak counter increases, motivating them to continue their success. The interface displays both their current streak and their best streak ever achieved. When they reach certain milestone achievements (3, 5, 10, 15, 20, 30, 50, 100 consecutive correct guesses), the interface celebrates their accomplishment with a quick animation and permanently changes the streak counter color to that milestone's distinct color. If they make an incorrect guess, their current streak resets to zero while their best streak record is preserved, and they start building their streak again from scratch. The streak counter resets to 0 at the start of each new session.
+A user playing the daily guessing game wants to track their success through consecutive days with correct guesses. Each day they visit and guess correctly, their streak counter increases by 1, motivating them to maintain their daily habit. The interface displays both their current streak and their best streak ever achieved. When they reach certain milestone achievements (3, 5, 10, 15, 20, 30, 50, 100 consecutive days), the interface celebrates their accomplishment with a quick animation and changes the streak counter color to that milestone's distinct color. If they make an incorrect guess OR skip a day without guessing, their current streak resets to zero while their best streak record is preserved in localStorage. The streak persists across browser sessions to support the multi-day gameplay pattern.
 
 ### Acceptance Scenarios
 *Write scenarios that can be directly converted to tests (support TDD)*
-1. **Given** the user has a streak of 0, **When** they make a correct guess, **Then** the streak counter increases to 1
-2. **Given** the user has a streak of 5, **When** they make a correct guess, **Then** the streak counter increases to 6
-3. **Given** the user has a streak of 10, **When** they make an incorrect guess, **Then** the streak counter resets to 0
-4. **Given** the user reaches a streak of exactly 3, **When** the counter updates, **Then** a milestone celebration is displayed
-5. **Given** the user reaches a streak of exactly 5, **When** the counter updates, **Then** a milestone celebration is displayed
-6. **Given** the user reaches a streak of exactly 10, **When** the counter updates, **Then** a milestone celebration is displayed
-7. **Given** the user reaches a streak of exactly 15, **When** the counter updates, **Then** a milestone celebration is displayed
-8. **Given** the user reaches a streak of exactly 20, **When** the counter updates, **Then** a milestone celebration is displayed
-9. **Given** the user reaches a streak of exactly 30, **When** the counter updates, **Then** a milestone celebration is displayed
-10. **Given** the user reaches a streak of exactly 50, **When** the counter updates, **Then** a milestone celebration is displayed
-11. **Given** the user reaches a streak of exactly 100, **When** the counter updates, **Then** a milestone celebration is displayed
-12. **Given** the user has a streak of 7 (not a milestone), **When** they make a correct guess reaching 8, **Then** the counter increases without milestone celebration
-13. **Given** the user reaches a milestone streak, **When** the celebration displays, **Then** a quick (<1 second) scale/pulse animation plays and the streak counter permanently changes to that milestone's distinct color
-14. **Given** the user has achieved a streak of 10 in the current session, **When** they later achieve a streak of 7, **Then** the "Best: 10" display remains unchanged
-15. **Given** the user closes and reopens the application, **When** the application loads, **Then** both current streak and best streak reset to 0
-16. **Given** the user is viewing the streak counter, **When** the counter is displayed, **Then** both "Current: X" and "Best: Y" values are visible
+
+**Daily Streak Mechanics**:
+1. **Given** the user has a streak of 0 and guesses correctly on Day 1 (2025-10-07), **When** the guess is submitted, **Then** the streak counter increases to 1 and last guess date is saved as "2025-10-07"
+2. **Given** the user has a streak of 1 from Day 1 and returns on Day 2 (2025-10-08) and guesses correctly, **When** the guess is submitted, **Then** the streak counter increases to 2
+3. **Given** the user has a streak of 5 from Day 5 and returns on Day 6 and guesses correctly, **When** the guess is submitted, **Then** the streak counter increases to 6
+4. **Given** the user has a streak of 10 from Day 10 and returns on Day 11 and guesses incorrectly, **When** the guess is submitted, **Then** the streak counter resets to 0
+5. **Given** the user has a streak of 3 from Day 3, skips Day 4, and returns on Day 5, **When** the application loads, **Then** the streak counter resets to 0 (streak broken by missed day)
+6. **Given** the user has a streak of 5 and visits multiple times on the same day, **When** they return later the same day, **Then** the streak counter remains at 5 (no double-counting same day)
+
+**Persistence**:
+7. **Given** the user has a streak of 7, **When** they close and reopen the application on the same day, **Then** the streak counter displays 7 (loaded from localStorage)
+8. **Given** the user has achieved a best streak of 10, **When** they close and reopen the application, **Then** the "Best: 10" display is preserved
+
+**Milestone Celebrations**:
+9. **Given** the user reaches a streak of exactly 3, **When** the counter updates, **Then** a milestone celebration is displayed
+10. **Given** the user reaches a streak of exactly 5, **When** the counter updates, **Then** a milestone celebration is displayed
+11. **Given** the user reaches a streak of exactly 10, **When** the counter updates, **Then** a milestone celebration is displayed
+12. **Given** the user reaches a streak of exactly 15, **When** the counter updates, **Then** a milestone celebration is displayed
+13. **Given** the user reaches a streak of exactly 20, **When** the counter updates, **Then** a milestone celebration is displayed
+14. **Given** the user reaches a streak of exactly 30, **When** the counter updates, **Then** a milestone celebration is displayed
+15. **Given** the user reaches a streak of exactly 50, **When** the counter updates, **Then** a milestone celebration is displayed
+16. **Given** the user reaches a streak of exactly 100, **When** the counter updates, **Then** a milestone celebration is displayed
+17. **Given** the user has a streak of 7 (not a milestone) and guesses correctly on the next day reaching 8, **When** the counter updates, **Then** the counter increases without milestone celebration
+18. **Given** the user reaches a milestone streak, **When** the celebration displays, **Then** a quick (<1 second) scale/pulse animation plays and the streak counter changes to that milestone's distinct color
+19. **Given** the user has achieved a streak of 10, **When** they later have a streak of 7 after a reset, **Then** the "Best: 10" display remains unchanged
+
+**Display**:
+20. **Given** the user is viewing the streak counter, **When** the counter is displayed, **Then** both "Current: X" and "Best: Y" values are visible
 
 ### Edge Cases
-- What happens when the user makes multiple correct guesses in rapid succession? (System must accurately count each one)
-- What happens when the user's streak is exactly at a milestone (e.g., 10) and they make another correct guess to 11? (No milestone celebration, just normal increment; milestone color persists)
-- What happens when the game is closed and reopened? (Both current and best streak reset to 0; ephemeral session-only storage)
-- What happens if the user reaches 100 and continues? (Continue counting beyond 100 with no additional milestones; retains milestone 100's color)
+- What happens when user returns on the same day after already guessing? (Streak remains unchanged; no double-increment)
+- What happens when user's streak is exactly at a milestone (e.g., 10) and they guess correctly the next day to reach 11? (No milestone celebration, just normal increment; milestone color persists)
+- What happens when user skips multiple days (e.g., Day 1 correct, skips Days 2-5, returns Day 6)? (Streak resets to 0 due to missed days)
+- What happens when user reaches 100 and continues to Day 101+? (Continue counting beyond 100 with no additional milestones; retains milestone 100's color)
 - What happens when current streak exceeds previous best? (Best streak updates immediately to match current streak)
-- What invariants must hold? (Streak count must always be non-negative; streak must reset to exactly 0 on incorrect guess, not negative values; best streak >= current streak at session start, best streak >= current streak after any reset)
+- What happens when localStorage is corrupted or cleared externally? (System treats as new user with streak = 0, best = 0)
+- What happens at timezone midnight boundaries? (Date comparison uses same timezone logic as daily challenge - see spec 001)
+- What invariants must hold? (Streak count >= 0; best streak >= current streak; lastGuessDate must be valid YYYY-MM-DD or null; streak can only increment by 1 per day maximum)
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
-- **FR-001**: System MUST maintain a counter that tracks consecutive correct guesses, starting at 0 for each session
-- **FR-002**: System MUST increment the current streak counter by 1 for each correct guess
-- **FR-003**: System MUST reset the current streak counter to 0 when any incorrect guess is made
-- **FR-004**: System MUST display both the current streak count and best streak count to the user at all times during gameplay (format: "Current: X" and "Best: Y")
-- **FR-005**: System MUST recognize milestones at streak values: 3, 5, 10, 15, 20, 30, 50, and 100
-- **FR-006**: System MUST trigger a milestone celebration when the current streak reaches any milestone value, consisting of a scale/pulse animation lasting less than 1 second
-- **FR-007**: System MUST permanently change the streak counter display color to the milestone's distinct color after the celebration animation completes, persisting for the remainder of the session
-- **FR-008**: System MUST assign a unique distinct color to each milestone level (e.g., 3=blue, 5=green, 10=purple, 15=orange, 20=red, 30=gold, 50=cyan, 100=magenta)
-- **FR-009**: System MUST continue counting streak beyond 100 without additional milestone celebrations, retaining milestone 100's color
-- **FR-010**: System MUST ensure streak counter never displays negative values
-- **FR-011**: System MUST reset both current streak and best streak to 0 at the start of each new session (no persistence across browser refresh or application restart)
-- **FR-012**: System MUST track and update the best streak value, setting it to the current streak value whenever current streak exceeds the previous best streak
-- **FR-013**: System MUST preserve the best streak value when the current streak resets due to an incorrect guess
+
+**Daily Streak Tracking**:
+- **FR-001**: System MUST maintain a counter that tracks consecutive calendar days with correct guesses
+- **FR-002**: System MUST store the date (YYYY-MM-DD format) of the user's most recent guess in localStorage
+- **FR-003**: System MUST increment the current streak counter by 1 when the user makes a correct guess on a new calendar day (date different from last guess date)
+- **FR-004**: System MUST NOT increment the streak counter when the user returns on the same calendar day after already guessing (prevent double-counting)
+- **FR-005**: System MUST reset the current streak counter to 0 when any incorrect guess is made
+- **FR-006**: System MUST reset the current streak counter to 0 when the user returns after skipping one or more calendar days (e.g., last guess was Day 1, user returns on Day 3)
+- **FR-007**: System MUST determine if days were skipped by comparing the current date with the last guess date (difference > 1 day = streak broken)
+
+**Persistence**:
+- **FR-008**: System MUST persist streak state in browser localStorage with key `'streak-state'`
+- **FR-009**: System MUST load streak state from localStorage on application start
+- **FR-010**: System MUST persist changes to streak state immediately after each guess
+- **FR-011**: System MUST handle corrupted or missing localStorage data gracefully by initializing fresh streak state (currentStreak: 0, bestStreak: 0, lastGuessDate: null)
+
+**Display & Best Streak**:
+- **FR-012**: System MUST display both the current streak count and best streak count to the user at all times during gameplay (format: "Current: X" and "Best: Y")
+- **FR-013**: System MUST track and update the best streak value, setting it to the current streak value whenever current streak exceeds the previous best streak
+- **FR-014**: System MUST preserve the best streak value when the current streak resets due to an incorrect guess or skipped days
+- **FR-015**: System MUST ensure streak counter never displays negative values
+
+**Milestones**:
+- **FR-016**: System MUST recognize milestones at streak values: 3, 5, 10, 15, 20, 30, 50, and 100
+- **FR-017**: System MUST trigger a milestone celebration when the current streak reaches any milestone value, consisting of a scale/pulse animation lasting less than 1 second
+- **FR-018**: System MUST change the streak counter display color to the milestone's distinct color after the celebration animation completes
+- **FR-019**: System MUST assign a unique distinct color to each milestone level (e.g., 3=blue, 5=green, 10=purple, 15=orange, 20=red, 30=gold, 50=cyan, 100=magenta)
+- **FR-020**: System MUST continue counting streak beyond 100 without additional milestone celebrations, retaining milestone 100's color
+- **FR-021**: System MUST reset milestone color to default when streak resets to 0
 
 ### Key Entities *(include if feature involves data)*
-- **Streak State**: Represents the session's streak tracking data
-  - Current count: non-negative integer (default: 0)
-  - Best count: non-negative integer (default: 0)
+- **Streak State**: Represents the user's streak tracking data (persisted in localStorage)
+  - Current count: non-negative integer (default: 0) - consecutive days with correct guesses
+  - Best count: non-negative integer (default: 0) - highest streak ever achieved
   - Current milestone color: string representing the color of the highest milestone reached by current streak (null if no milestone reached)
-  - Session-only storage (ephemeral, resets on page refresh)
+  - Last guess date: YYYY-MM-DD format string or null (default: null) - date of most recent guess, used to detect skipped days and prevent double-counting
 
 - **Milestone Definition**: Static configuration for each milestone
   - Streak value: one of [3, 5, 10, 15, 20, 30, 50, 100]

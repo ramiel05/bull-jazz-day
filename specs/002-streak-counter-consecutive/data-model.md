@@ -1,37 +1,44 @@
-# Data Model: Streak Counter
+# Data Model: Daily Streak Counter
 
 **Feature**: 002-streak-counter-consecutive
-**Date**: 2025-10-01
+**Created**: 2025-10-01
+**Updated**: 2025-10-07 (aligned with daily challenge mechanics)
 
 ## Overview
 
-This document defines the data structures for the streak counter feature. All types follow TypeScript conventions and Constitutional principles (functional patterns, explicit null types, immutability through React state updates).
+This document defines the data structures for the daily streak counter feature. All types follow TypeScript conventions and Constitutional principles (functional patterns, explicit null types, immutability through React state updates).
+
+**Context**: Integrates with daily challenge game (spec 001). Streak represents consecutive DAYS with correct guesses, persisted in localStorage across browser sessions.
 
 ## Core Entities
 
 ### StreakState
 
-Represents the current session's streak tracking data.
+Represents the user's streak tracking data, persisted in localStorage.
 
 **Type Definition**:
 ```typescript
 type StreakState = {
-  currentStreak: number;        // Non-negative integer, starts at 0
-  bestStreak: number;           // Non-negative integer, starts at 0
+  currentStreak: number;              // Non-negative integer, starts at 0
+  bestStreak: number;                 // Non-negative integer, starts at 0
   currentMilestoneColor: string | null;  // null = no milestone reached yet
+  lastGuessDate: string | null;       // YYYY-MM-DD format or null
 };
 ```
 
 **Properties**:
-- `currentStreak`: Consecutive correct guesses in current run (resets to 0 on incorrect guess)
-- `bestStreak`: Highest streak achieved in current session (never decreases, resets on session start)
+- `currentStreak`: Consecutive calendar days with correct guesses (resets to 0 on incorrect guess or skipped day)
+- `bestStreak`: Highest streak ever achieved (persists across all sessions, never decreases)
 - `currentMilestoneColor`: CSS class string for milestone color, or null if no milestone reached
+- `lastGuessDate`: Date (YYYY-MM-DD) of most recent guess, used to detect skipped days and prevent double-counting same day
 
 **Invariants**:
 - `currentStreak >= 0`
 - `bestStreak >= 0`
-- `bestStreak >= currentStreak` (after any reset)
+- `bestStreak >= currentStreak` (always true)
 - `currentMilestoneColor` is null OR valid Tailwind color class string
+- `lastGuessDate` is null OR valid YYYY-MM-DD format string
+- Streak can increment by max 1 per calendar day
 
 **Default State**:
 ```typescript
@@ -39,22 +46,33 @@ const initialStreakState: StreakState = {
   currentStreak: 0,
   bestStreak: 0,
   currentMilestoneColor: null,
+  lastGuessDate: null,
 };
 ```
 
-**State Transitions**:
+**State Transitions** (Daily Streak):
 ```
-[Initial: 0/0/null]
-  ↓ correct guess
-[1/1/null]
-  ↓ correct guess
-[2/2/null]
-  ↓ correct guess (milestone 3 reached)
-[3/3/blue]
-  ↓ correct guess
-[4/4/blue] (color persists)
-  ↓ incorrect guess
-[0/4/null] (current resets, best preserved, color resets)
+[Initial: 0/0/null/null]
+  ↓ Day 1 (2025-10-07) correct guess
+[1/1/null/"2025-10-07"]
+  ↓ Day 2 (2025-10-08) correct guess
+[2/2/null/"2025-10-08"]
+  ↓ Day 3 (2025-10-09) correct guess (milestone 3 reached)
+[3/3/blue/"2025-10-09"]
+  ↓ Day 4 (2025-10-10) correct guess
+[4/4/blue/"2025-10-10"] (color persists)
+  ↓ Day 5 (2025-10-11) incorrect guess
+[0/4/null/"2025-10-11"] (current resets, best preserved, color resets)
+  ↓ Skip Day 6, return Day 7 (2025-10-13)
+[0/4/null/"2025-10-13"] (streak already broken, date updates)
+```
+
+**Skipped Day Detection**:
+```
+lastGuessDate = "2025-10-07"
+currentDate = "2025-10-09"
+daysDiff = 2 (skipped Day 8)
+→ Streak breaks, reset to 0
 ```
 
 ### MilestoneConfig
@@ -117,6 +135,62 @@ type MilestoneEvent = {
 5. Color persists in StreakState.currentMilestoneColor
 ```
 
+## Persistence Strategy
+
+### localStorage Integration
+
+Streak state is stored separately from daily game state.
+
+**Storage Keys**:
+- Daily game state: `'daily-game-state'` (from spec 001)
+- Streak state: `'streak-state'` (spec 002)
+
+**Rationale for Separate Storage**:
+- Daily game state resets when calendar day changes
+- Streak state persists across days
+- Different lifecycles require separate storage
+
+### Storage Functions
+
+```typescript
+const STORAGE_KEY = 'streak-state';
+
+function getStreakState(): StreakState {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      // Validate and return parsed state
+      return validateStreakState(parsed);
+    }
+  } catch (error) {
+    console.error('Error reading streak state:', error);
+  }
+  return initialStreakState;
+}
+
+function saveStreakState(state: StreakState): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (error) {
+    console.error('Error saving streak state:', error);
+  }
+}
+```
+
+### Integration with Daily Challenge
+
+Streak updates must coordinate with daily guess:
+
+1. User makes guess (spec 001 flow)
+2. Daily state saved: `{ date: "2025-10-07", guessedCorrectly: true, ... }`
+3. Check if guess was correct
+4. If correct AND new day: increment streak, update lastGuessDate
+5. If incorrect: reset streak to 0, update lastGuessDate
+6. If same day as lastGuessDate: no streak change
+7. If skipped days: reset streak to 0, update lastGuessDate
+8. Save updated streak state to localStorage
+
 ## Integration with Existing GameState
 
 ### Modified GameState
@@ -144,9 +218,10 @@ export type GameState = {
 
 **Migration Strategy**:
 1. Add streak field as optional first: `streak?: StreakState`
-2. Initialize in GameContainer useEffect
-3. Update handleGuess to increment/reset streak
-4. Remove optional modifier once all code updated
+2. Load from localStorage on GameContainer mount
+3. Update handleGuess to check date and increment/reset streak
+4. Save to localStorage after each streak update
+5. Remove optional modifier once all code updated
 
 ## Validation Rules
 
@@ -160,12 +235,35 @@ invariant(
   state.bestStreak >= state.currentStreak,
   'Best streak must be >= current streak'
 );
+invariant(
+  state.lastGuessDate === null || /^\d{4}-\d{2}-\d{2}$/.test(state.lastGuessDate),
+  'Last guess date must be null or YYYY-MM-DD format'
+);
 ```
 
 **Postconditions** (after state update):
-- Increment: `newStreak === oldStreak + 1`
-- Reset: `newStreak === 0`
+- Increment (new day): `newStreak === oldStreak + 1`, `newLastGuessDate === currentDate`
+- Reset (incorrect or skipped): `newStreak === 0`, `newLastGuessDate === currentDate`
+- Same day: `newStreak === oldStreak`, `newLastGuessDate === oldLastGuessDate`
 - Best update: `newBest === Math.max(oldBest, currentStreak)`
+
+### Skipped Day Detection Logic
+
+```typescript
+function calculateDaysDifference(date1: string, date2: string): number {
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
+  const diffTime = Math.abs(d2.getTime() - d1.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays;
+}
+
+function hasSkippedDays(lastGuessDate: string | null, currentDate: string): boolean {
+  if (lastGuessDate === null) return false;
+  const daysDiff = calculateDaysDifference(lastGuessDate, currentDate);
+  return daysDiff > 1; // More than 1 day between guesses = skipped
+}
+```
 
 ### Milestone Detection
 
@@ -199,12 +297,23 @@ MilestoneEvent (0..*) --derives-from--> (1) StreakState [transient]
 
 ## Serialization
 
-**None Required**: All state is ephemeral (session-only, no persistence)
+**localStorage Format**:
+```json
+{
+  "currentStreak": 5,
+  "bestStreak": 10,
+  "currentMilestoneColor": "text-green-500",
+  "lastGuessDate": "2025-10-07"
+}
+```
 
-**Session Boundary**:
-- Page refresh: All state lost (browser default behavior)
-- No localStorage/sessionStorage usage
-- No URL state encoding
+**Storage Key**: `'streak-state'`
+
+**Persistence Lifecycle**:
+- Load on application start
+- Save immediately after each streak update
+- Persists across browser sessions
+- No expiration (user can have infinite lifetime best streak)
 
 ## Type Exports
 

@@ -1,28 +1,38 @@
-# Research: Streak Counter
+# Research: Daily Streak Counter
 
 **Feature**: 002-streak-counter-consecutive
-**Date**: 2025-10-01
+**Created**: 2025-10-01
+**Updated**: 2025-10-07 (aligned with daily challenge mechanics)
 
 ## Research Summary
 
-All technical decisions for this feature are clear from the specification and existing codebase context. No additional research required.
+Technical decisions have been updated to support daily streak persistence across browser sessions. Streak now tracks consecutive DAYS with correct guesses (not guesses within a session), requiring localStorage integration and skipped day detection logic.
 
 ## Technology Decisions
 
-### 1. State Management Approach
+### 1. State Management & Persistence Approach
 
-**Decision**: Use React hooks (useState) with custom hook abstraction (useStreakCounter)
+**Decision**: Use React hooks (useState) + localStorage persistence with custom hook abstraction (useStreakCounter)
 
 **Rationale**:
 - Aligns with existing codebase pattern (game-container.tsx uses useState for GameState)
 - Functional pattern per Constitution Principle I
-- No need for external state management (Redux, Zustand) for session-only ephemeral state
-- Custom hook encapsulates streak logic and provides clean interface to components
+- localStorage provides persistence across browser sessions (required for daily streak)
+- Custom hook encapsulates streak logic, localStorage I/O, and skipped day detection
+- Same pattern as spec 001's daily-state-storage (consistency across features)
+
+**Persistence Strategy**:
+- Load streak state from localStorage on component mount
+- Save to localStorage immediately after each streak update
+- Separate storage key (`'streak-state'`) from daily game state (`'daily-game-state'`)
+- Graceful fallback to initial state if localStorage unavailable or corrupted
 
 **Alternatives Considered**:
 - Context API: Rejected - overkill for single-feature state not shared across route boundaries
 - useReducer: Rejected - state updates are simple increments/resets, not complex state machines
-- External state library: Rejected - adds dependency for simple session-only state
+- External state library: Rejected - adds dependency for localStorage wrapper
+- sessionStorage: Rejected - clears on browser close, breaks multi-day streak tracking
+- Combining with daily-game-state: Rejected - different lifecycles (streak persists across days, daily state resets each day)
 
 ### 2. Animation Implementation
 
@@ -74,19 +84,60 @@ All technical decisions for this feature are clear from the specification and ex
 - Cypress: Rejected - no E2E requirement, integration tests in Vitest sufficient
 - Separate test folder structure: Rejected - violates Constitution V (co-location)
 
-### 5. Integration with Existing Game State
+### 5. Skipped Day Detection
 
-**Decision**: Extend GameState type with optional streak field, initialize in GameContainer
+**Decision**: Calculate calendar day difference using Date objects and compare with lastGuessDate
+
+**Rationale**:
+- Timezone-aware: Uses same date calculation as spec 001 (Intl.DateTimeFormat with 'sv-SE')
+- Accurate: Handles month boundaries, leap years automatically
+- Simple logic: If `Math.abs(currentDate - lastGuessDate) > 1 day`, streak breaks
+- No dependencies: Pure JavaScript Date arithmetic
+
+**Implementation**:
+```typescript
+function calculateDaysDifference(date1: string, date2: string): number {
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
+  const diffTime = Math.abs(d2.getTime() - d1.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays;
+}
+```
+
+**Edge Cases Handled**:
+- Midnight boundary: Uses calendar dates, not timestamps (consistent with daily challenge)
+- Timezone changes: Both dates in same format (YYYY-MM-DD in local timezone)
+- Month/year boundaries: Date object handles automatically
+- Leap years: Date object handles automatically
+
+**Alternatives Considered**:
+- String comparison: Rejected - doesn't handle month/year boundaries correctly
+- Timestamp arithmetic: Rejected - DST transitions can cause off-by-one errors
+- date-fns library: Rejected - adds dependency for simple date math
+- Manual day counting: Rejected - error-prone with month boundaries
+
+### 6. Integration with Existing Game State
+
+**Decision**: Extend GameState type with streak field, load from localStorage on mount, save on each guess
 
 **Rationale**:
 - Minimal modification to existing code (game-container.tsx owns state)
 - Streak updates triggered by validateGuess result (correct/incorrect)
-- handleGuess and handleContinue already touch state, natural integration points
-- Backward compatible (streak field optional during migration)
+- Must check date before updating streak (prevent double-count, detect skipped days)
+- handleGuess is natural integration point for streak logic
+- localStorage load/save pattern matches spec 001's daily-state-storage
+
+**Integration Points**:
+1. On mount: Load streak from localStorage
+2. On mount: Check if skipped days → reset streak if true
+3. On guess: Check if new day → increment if correct, reset if incorrect
+4. On guess: Save updated streak to localStorage
 
 **Alternatives Considered**:
 - Separate context: Rejected - creates two sources of truth for game state
 - Lift state to page.tsx: Rejected - GameContainer is appropriate boundary
+- Combine with daily-game-state storage: Rejected - different lifecycles
 - URL state (search params): Rejected - ephemeral session-only requirement
 
 ### 6. Accessibility Considerations
