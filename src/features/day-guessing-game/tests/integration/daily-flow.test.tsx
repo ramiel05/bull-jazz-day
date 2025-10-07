@@ -11,8 +11,6 @@ describe('Daily Challenge Flow (Integration)', () => {
   });
 
   it('should show new daily challenge on first visit', async () => {
-    const user = userEvent.setup();
-
     render(<GameContainer />);
 
     // Should show the challenge prompt
@@ -381,8 +379,6 @@ describe('Streak Updates on Guesses (Integration)', () => {
   });
 
   it('should preserve best streak after incorrect guess', async () => {
-    const user = userEvent.setup();
-
     // This test verifies the hook logic: best streak never decreases
     // We'll store streak data manually to test persistence
     const streakState = {

@@ -1,11 +1,16 @@
-import { useState, useEffect, useCallback } from 'react';
-import type { DailyChallenge, DailyGameState } from '~/features/day-guessing-game/types/daily-types';
-import { getCurrentLocalDate } from '../utils/timezone-utils';
-import { getDailyChallenge } from '../utils/get-daily-challenge';
-import { getDailyState, saveDailyState } from '../storage/daily-state-storage';
+import { useState, useEffect, useCallback } from "react";
+import type {
+  DailyChallenge,
+  DailyGameState,
+} from "~/features/day-guessing-game/types/daily-types";
+import { getCurrentLocalDate } from "~/features/day-guessing-game/daily-challenge/utils/timezone-utils";
+import { getDailyChallenge } from "~/features/day-guessing-game/daily-challenge/utils/get-daily-challenge";
+import { getDailyState, saveDailyState } from "~/features/day-guessing-game/daily-challenge/storage/daily-state-storage";
 
 export function useDailyState() {
-  const [dailyChallenge, setDailyChallenge] = useState<DailyChallenge | null>(null);
+  const [dailyChallenge, setDailyChallenge] = useState<DailyChallenge | null>(
+    null
+  );
   const [gameState, setGameState] = useState<DailyGameState | null>(null);
 
   // Initialize state only on client-side to avoid hydration mismatch
