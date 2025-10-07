@@ -1,13 +1,13 @@
 'use client';
 
 import type { GuessResult } from '~/features/day-guessing-game/types/game-types';
+import CountdownTimer from './countdown-timer';
 
 type FeedbackPanelProps = {
   result: GuessResult;
-  onContinue: () => void;
 };
 
-export default function FeedbackPanel({ result, onContinue }: FeedbackPanelProps) {
+export default function FeedbackPanel({ result }: FeedbackPanelProps) {
   const { correct, day } = result;
 
   return (
@@ -28,6 +28,10 @@ export default function FeedbackPanel({ result, onContinue }: FeedbackPanelProps
         </h2>
 
         <div className="text-gray-900 dark:text-gray-100 space-y-3">
+          <p className="font-semibold">
+            This is a {day.isReal ? 'real' : 'fake'} international day.
+          </p>
+
           {day.date && (
             <p className="font-semibold">
               Date: <span className="font-normal">{day.date}</span>
@@ -51,14 +55,13 @@ export default function FeedbackPanel({ result, onContinue }: FeedbackPanelProps
         </div>
       </div>
 
-      <div className="flex justify-center">
-        <button
-          onClick={onContinue}
-          aria-label="Continue to next international day"
-          className="px-8 py-4 text-lg font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-        >
-          Continue
-        </button>
+      <div className="text-center p-6 bg-blue-50 dark:bg-blue-900 rounded-lg">
+        <p className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">
+          Come back tomorrow for a new daily challenge!
+        </p>
+        <p className="text-sm text-blue-700 dark:text-blue-200">
+          Next challenge in: <CountdownTimer />
+        </p>
       </div>
     </div>
   );

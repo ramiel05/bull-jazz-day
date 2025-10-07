@@ -10,7 +10,7 @@ vi.mock('~/features/day-guessing-game/data/days-pool', () => ({
       id: 'mock-real',
       name: 'Mock Real Day',
       isReal: true,
-      date: 'January 1',
+      date: '01-01',
       description: 'A mock real day',
       sourceUrl: 'https://example.com',
     },
@@ -25,20 +25,21 @@ vi.mock('~/features/day-guessing-game/data/days-pool', () => ({
   ],
 }));
 
-describe('GameContainer', () => {
+describe('GameContainer - Daily Mode', () => {
   beforeEach(() => {
-    // Reset any mocks before each test
+    localStorage.clear();
     vi.clearAllMocks();
   });
 
   describe('Initial state', () => {
-    it('should render a day name on initial load', () => {
+    it('should render "Today is" prompt with day name', () => {
       render(<GameContainer />);
 
-      // Should show either "Mock Real Day" or "Mock Fake Day"
+      expect(screen.getByText(/today is/i)).toBeInTheDocument();
+
+      // Should show the daily challenge day name
       const heading = screen.getByRole('heading');
       expect(heading).toBeInTheDocument();
-      expect(heading.textContent).toMatch(/Mock (Real|Fake) Day/);
     });
 
     it('should render guess buttons on initial load', () => {
@@ -53,18 +54,18 @@ describe('GameContainer', () => {
 
       expect(screen.queryByText(/correct/i)).not.toBeInTheDocument();
       expect(screen.queryByText(/incorrect/i)).not.toBeInTheDocument();
-      expect(screen.queryByRole('button', { name: /continue/i })).not.toBeInTheDocument();
+      expect(screen.queryByText(/come back tomorrow/i)).not.toBeInTheDocument();
     });
   });
 
-  describe('Guess flow', () => {
+  describe('Guess flow - Daily mode', () => {
     it('should show feedback after making a guess', async () => {
       const user = userEvent.setup();
       render(<GameContainer />);
 
       await user.click(screen.getByRole('button', { name: /real/i }));
 
-      // Should show either "Correct" or "Incorrect" based on the day
+      // Should show either "Correct" or "Incorrect"
       expect(
         screen.getByText(/correct/i) || screen.getByText(/incorrect/i)
       ).toBeInTheDocument();
@@ -81,13 +82,13 @@ describe('GameContainer', () => {
       expect(screen.queryByRole('button', { name: /fake/i })).not.toBeInTheDocument();
     });
 
-    it('should show Continue button after making a guess', async () => {
+    it('should show "Come back tomorrow" message after guessing', async () => {
       const user = userEvent.setup();
       render(<GameContainer />);
 
       await user.click(screen.getByRole('button', { name: /real/i }));
 
-      expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument();
+      expect(screen.getByText(/come back tomorrow/i)).toBeInTheDocument();
     });
 
     it('should show day description after making a guess', async () => {
@@ -98,62 +99,62 @@ describe('GameContainer', () => {
 
       expect(screen.getByText(/mock (real|fake) day/i)).toBeInTheDocument();
     });
-  });
 
-  describe('Continue flow', () => {
-    it('should return to guessing state after clicking Continue', async () => {
+    it('should reveal whether the day is real or fake', async () => {
       const user = userEvent.setup();
       render(<GameContainer />);
 
-      // Make a guess
       await user.click(screen.getByRole('button', { name: /real/i }));
 
-      // Click Continue
-      await user.click(screen.getByRole('button', { name: /continue/i }));
+      expect(screen.getByText(/this is a (real|fake) international day/i)).toBeInTheDocument();
+    });
+  });
 
-      // Should be back to guessing state
-      expect(screen.getByRole('button', { name: /real/i })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /fake/i })).toBeInTheDocument();
+  describe('Daily challenge persistence', () => {
+    it('should show the same challenge after page reload', () => {
+      const { unmount } = render(<GameContainer />);
+
+      const dayName1 = screen.getByRole('heading').textContent;
+
+      unmount();
+
+      render(<GameContainer />);
+
+      const dayName2 = screen.getByRole('heading').textContent;
+
+      expect(dayName1).toBe(dayName2);
+    });
+
+    it('should persist guess result after page reload', async () => {
+      const user = userEvent.setup();
+
+      const { unmount } = render(<GameContainer />);
+
+      await user.click(screen.getByRole('button', { name: /real/i }));
+
+      const feedbackText = screen.getByText(/correct|incorrect/i).textContent;
+
+      unmount();
+
+      render(<GameContainer />);
+
+      // Should still show the same feedback
+      expect(screen.getByText(/correct|incorrect/i).textContent).toBe(feedbackText);
+
+      // Should not show guess buttons
+      expect(screen.queryByRole('button', { name: /real/i })).not.toBeInTheDocument();
+    });
+  });
+
+  describe('No continue button in daily mode', () => {
+    it('should not show Continue button after guessing', async () => {
+      const user = userEvent.setup();
+      render(<GameContainer />);
+
+      await user.click(screen.getByRole('button', { name: /real/i }));
+
+      // Continue button should not exist in daily mode
       expect(screen.queryByRole('button', { name: /continue/i })).not.toBeInTheDocument();
-    });
-
-    it('should show a day name after continuing', async () => {
-      const user = userEvent.setup();
-      render(<GameContainer />);
-
-      // Make a guess
-      await user.click(screen.getByRole('button', { name: /real/i }));
-
-      // Click Continue
-      await user.click(screen.getByRole('button', { name: /continue/i }));
-
-      // Should show a day name
-      const heading = screen.getByRole('heading');
-      expect(heading).toBeInTheDocument();
-      expect(heading.textContent).toMatch(/Mock (Real|Fake) Day/);
-    });
-  });
-
-  describe('Multiple rounds', () => {
-    it('should handle multiple guess-continue cycles', async () => {
-      const user = userEvent.setup();
-      render(<GameContainer />);
-
-      // Round 1
-      await user.click(screen.getByRole('button', { name: /real/i }));
-      await user.click(screen.getByRole('button', { name: /continue/i }));
-
-      // Round 2
-      await user.click(screen.getByRole('button', { name: /fake/i }));
-      await user.click(screen.getByRole('button', { name: /continue/i }));
-
-      // Round 3
-      await user.click(screen.getByRole('button', { name: /real/i }));
-
-      // Should still show feedback
-      expect(
-        screen.getByText(/correct/i) || screen.getByText(/incorrect/i)
-      ).toBeInTheDocument();
     });
   });
 });

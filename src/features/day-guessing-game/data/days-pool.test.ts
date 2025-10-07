@@ -14,6 +14,28 @@ describe('Days Pool', () => {
     expect(fakeDays.length).toBeGreaterThan(0);
   });
 
+  // T026: Validate days pool has at least 100 real days with valid MM-DD dates
+  it('should have at least 100 real days with valid MM-DD dates', () => {
+    const realDays = daysPool.filter((day) => day.isReal);
+
+    expect(realDays.length).toBeGreaterThanOrEqual(100);
+
+    realDays.forEach((day) => {
+      expect(day.date).toMatch(/^\d{2}-\d{2}$/);
+    });
+  });
+
+  // T027: Validate days pool has at least 100 fake days with null dates
+  it('should have at least 100 fake days with null dates', () => {
+    const fakeDays = daysPool.filter((day) => !day.isReal);
+
+    expect(fakeDays.length).toBeGreaterThanOrEqual(100);
+
+    fakeDays.forEach((day) => {
+      expect(day.date).toBeNull();
+    });
+  });
+
   it('should have unique ids for all days', () => {
     const ids = daysPool.map((day) => day.id);
     const uniqueIds = new Set(ids);

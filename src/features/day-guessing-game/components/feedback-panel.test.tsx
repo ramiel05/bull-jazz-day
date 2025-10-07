@@ -1,6 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import FeedbackPanel from './feedback-panel';
 import type { GuessResult } from '~/features/day-guessing-game/types/game-types';
 import type { InternationalDay } from '~/features/day-guessing-game/types/international-day';
@@ -28,7 +27,7 @@ describe('FeedbackPanel', () => {
     it('should display "Correct" message when guess is correct', () => {
       const correctResult: GuessResult = { correct: true, day: realDay };
 
-      render(<FeedbackPanel result={correctResult} onContinue={vi.fn()} />);
+      render(<FeedbackPanel result={correctResult} />);
 
       expect(screen.getByText(/correct/i)).toBeInTheDocument();
     });
@@ -38,7 +37,7 @@ describe('FeedbackPanel', () => {
     it('should display "Incorrect" message when guess is incorrect', () => {
       const incorrectResult: GuessResult = { correct: false, day: realDay };
 
-      render(<FeedbackPanel result={incorrectResult} onContinue={vi.fn()} />);
+      render(<FeedbackPanel result={incorrectResult} />);
 
       expect(screen.getByText(/incorrect/i)).toBeInTheDocument();
     });
@@ -48,7 +47,7 @@ describe('FeedbackPanel', () => {
     it('should display day description', () => {
       const result: GuessResult = { correct: true, day: realDay };
 
-      render(<FeedbackPanel result={result} onContinue={vi.fn()} />);
+      render(<FeedbackPanel result={result} />);
 
       expect(screen.getByText(realDay.description)).toBeInTheDocument();
     });
@@ -56,7 +55,7 @@ describe('FeedbackPanel', () => {
     it('should display date for real days', () => {
       const result: GuessResult = { correct: true, day: realDay };
 
-      render(<FeedbackPanel result={result} onContinue={vi.fn()} />);
+      render(<FeedbackPanel result={result} />);
 
       expect(screen.getByText(/january 1/i)).toBeInTheDocument();
     });
@@ -64,7 +63,7 @@ describe('FeedbackPanel', () => {
     it('should display source link for real days', () => {
       const result: GuessResult = { correct: true, day: realDay };
 
-      render(<FeedbackPanel result={result} onContinue={vi.fn()} />);
+      render(<FeedbackPanel result={result} />);
 
       const link = screen.getByRole('link');
       expect(link).toHaveAttribute('href', realDay.sourceUrl);
@@ -73,7 +72,7 @@ describe('FeedbackPanel', () => {
     it('should not display date for fake days', () => {
       const result: GuessResult = { correct: true, day: fakeDay };
 
-      render(<FeedbackPanel result={result} onContinue={vi.fn()} />);
+      render(<FeedbackPanel result={result} />);
 
       expect(screen.queryByText(/january/i)).not.toBeInTheDocument();
     });
@@ -81,31 +80,35 @@ describe('FeedbackPanel', () => {
     it('should not display source link for fake days', () => {
       const result: GuessResult = { correct: true, day: fakeDay };
 
-      render(<FeedbackPanel result={result} onContinue={vi.fn()} />);
+      render(<FeedbackPanel result={result} />);
 
       expect(screen.queryByRole('link')).not.toBeInTheDocument();
     });
   });
 
-  describe('Continue button', () => {
-    it('should render Continue button', () => {
+  describe('Daily challenge messaging', () => {
+    it('should display "Come back tomorrow" message', () => {
       const result: GuessResult = { correct: true, day: realDay };
 
-      render(<FeedbackPanel result={result} onContinue={vi.fn()} />);
+      render(<FeedbackPanel result={result} />);
 
-      expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument();
+      expect(screen.getByText(/come back tomorrow/i)).toBeInTheDocument();
     });
 
-    it('should call onContinue when Continue button is clicked', async () => {
-      const user = userEvent.setup();
-      const onContinueMock = vi.fn();
+    it('should display countdown timer', () => {
       const result: GuessResult = { correct: true, day: realDay };
 
-      render(<FeedbackPanel result={result} onContinue={onContinueMock} />);
+      render(<FeedbackPanel result={result} />);
 
-      await user.click(screen.getByRole('button', { name: /continue/i }));
+      expect(screen.getByLabelText(/time until next challenge/i)).toBeInTheDocument();
+    });
 
-      expect(onContinueMock).toHaveBeenCalledTimes(1);
+    it('should not render Continue button in daily mode', () => {
+      const result: GuessResult = { correct: true, day: realDay };
+
+      render(<FeedbackPanel result={result} />);
+
+      expect(screen.queryByRole('button', { name: /continue/i })).not.toBeInTheDocument();
     });
   });
 });
