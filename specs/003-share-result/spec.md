@@ -133,6 +133,7 @@ _Write scenarios that can be directly converted to tests (support TDD)_
   - Emoji indicators (string, never empty - always includes guess result emoji)
   - Production site URL (string, constant: https://bull-jazz-day.vercel.app)
   - Format: Plain text with line breaks between sections for cross-platform compatibility
+  - Style: Natural, conversational phrasing (e.g., "International Day of Peace is real!", "My guess: Real") rather than key-value format (e.g., "Day:", "Type:", "Your guess:")
 
 ---
 
