@@ -14,6 +14,8 @@ export default function GameContainer() {
   const { streakState, incrementStreak, resetStreak } = useStreakCounter();
 
   const handleGuess = (guessedReal: boolean) => {
+    if (!dailyChallenge) return;
+
     // Submit the guess through daily state hook
     submitGuess(guessedReal);
 
@@ -25,6 +27,23 @@ export default function GameContainer() {
       resetStreak();
     }
   };
+
+  // Show loading state while initializing
+  if (!dailyChallenge || !gameState) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-8">
+        <main className="w-full max-w-4xl" role="main" aria-label="International Day Guessing Game">
+          <div className="mb-6">
+            <StreakDisplay
+              currentStreak={streakState.currentStreak}
+              bestStreak={streakState.bestStreak}
+              milestoneColor={streakState.currentMilestoneColor}
+            />
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   const hasGuessed = gameState.guessedCorrectly !== null;
   const result = hasGuessed

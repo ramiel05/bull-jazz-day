@@ -5,17 +5,27 @@ import { getDailyChallenge } from '../utils/get-daily-challenge';
 import { getDailyState, saveDailyState } from '../storage/daily-state-storage';
 
 export function useDailyState() {
-  const [currentDate] = useState(() => getCurrentLocalDate());
-  const [dailyChallenge] = useState<DailyChallenge>(() => getDailyChallenge(currentDate));
-  const [gameState, setGameState] = useState<DailyGameState>(() => getDailyState(currentDate));
+  const [dailyChallenge, setDailyChallenge] = useState<DailyChallenge | null>(null);
+  const [gameState, setGameState] = useState<DailyGameState | null>(null);
+
+  // Initialize state only on client-side to avoid hydration mismatch
+  useEffect(() => {
+    const currentDate = getCurrentLocalDate();
+    setDailyChallenge(getDailyChallenge(currentDate));
+    setGameState(getDailyState(currentDate));
+  }, []);
 
   // Save state to localStorage whenever it changes
   useEffect(() => {
-    saveDailyState(gameState);
+    if (gameState) {
+      saveDailyState(gameState);
+    }
   }, [gameState]);
 
   const submitGuess = useCallback(
     (guessedReal: boolean) => {
+      if (!dailyChallenge || !gameState) return;
+
       // Only allow submitting if not already guessed
       if (gameState.guessedCorrectly !== null) {
         return;
@@ -24,12 +34,12 @@ export function useDailyState() {
       const isCorrect = guessedReal === dailyChallenge.internationalDay.isReal;
 
       setGameState({
-        date: currentDate,
+        date: gameState.date,
         guessedCorrectly: isCorrect,
         timestamp: Date.now(),
       });
     },
-    [currentDate, dailyChallenge.internationalDay.isReal, gameState.guessedCorrectly]
+    [dailyChallenge, gameState]
   );
 
   return {
