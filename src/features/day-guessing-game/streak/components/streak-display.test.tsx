@@ -15,20 +15,20 @@ describe("StreakDisplay", () => {
     it("renders 'Current: 0' and 'Best: 0' for initial state", () => {
       render(<StreakDisplay currentStreak={0} bestStreak={0} milestoneColor={null} />);
 
-      expect(screen.getByText(/Current:\s*0/)).toBeInTheDocument();
-      expect(screen.getByText(/Best:\s*0/)).toBeInTheDocument();
+      expect(screen.getByTestId('current-streak')).toHaveTextContent('Current:0');
+      expect(screen.getByTestId('best-streak')).toHaveTextContent('Best:0');
     });
 
     it("renders correct current streak value", () => {
       render(<StreakDisplay currentStreak={5} bestStreak={5} milestoneColor={null} />);
 
-      expect(screen.getByText(/Current:\s*5/)).toBeInTheDocument();
+      expect(screen.getByTestId('current-streak')).toHaveTextContent('5');
     });
 
     it("renders correct best streak value", () => {
       render(<StreakDisplay currentStreak={3} bestStreak={10} milestoneColor={null} />);
 
-      expect(screen.getByText(/Best:\s*10/)).toBeInTheDocument();
+      expect(screen.getByTestId('best-streak')).toHaveTextContent('10');
     });
   });
 

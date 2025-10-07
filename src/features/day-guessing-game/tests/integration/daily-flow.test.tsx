@@ -179,9 +179,7 @@ describe('Day Transition (Integration)', () => {
     vi.useRealTimers();
   });
 
-  it.skip('should present new challenge when day changes', async () => {
-    const user = userEvent.setup();
-
+  it('should present new challenge when day changes', () => {
     // October 5 (using local time, not UTC)
     const oct5 = new Date('2025-10-05');
     oct5.setHours(12, 0, 0, 0);
@@ -190,7 +188,7 @@ describe('Day Transition (Integration)', () => {
     const { unmount } = render(<GameContainer />);
 
     const realButton = screen.getByRole('button', { name: /real/i });
-    await user.click(realButton);
+    fireEvent.click(realButton);
 
     // Verify guess was made
     expect(screen.getByText(/correct|incorrect/i)).toBeInTheDocument();
@@ -286,17 +284,16 @@ describe('Streak Initialization (Integration)', () => {
     render(<GameContainer />);
 
     // Should show Current: 0 and Best: 0
-    expect(screen.getByText(/Current: 0/i)).toBeInTheDocument();
-    expect(screen.getByText(/Best: 0/i)).toBeInTheDocument();
+    expect(screen.getByTestId('current-streak')).toHaveTextContent('Current:0');
+    expect(screen.getByTestId('best-streak')).toHaveTextContent('Best:0');
   });
 
   it('should display StreakDisplay component in the UI', () => {
     render(<GameContainer />);
 
-    // StreakDisplay should be visible with role="status"
-    const streakDisplay = screen.getByRole('status');
-    expect(streakDisplay).toBeInTheDocument();
-    expect(streakDisplay).toHaveClass('streak-display');
+    // StreakDisplay should be visible with test ids
+    expect(screen.getByTestId('current-streak')).toBeInTheDocument();
+    expect(screen.getByTestId('best-streak')).toBeInTheDocument();
   });
 });
 
@@ -316,7 +313,8 @@ describe('Streak Updates on Guesses (Integration)', () => {
     render(<GameContainer />);
 
     // Initially 0/0
-    expect(screen.getByText(/Current: 0/i)).toBeInTheDocument();
+    expect(screen.getByTestId('current-streak')).toHaveTextContent('0');
+    expect(screen.getByTestId('best-streak')).toHaveTextContent('0');
 
     // Click the correct button based on the actual answer
     const correctButton = screen.getByRole('button', {
@@ -329,8 +327,8 @@ describe('Streak Updates on Guesses (Integration)', () => {
 
     // Streak should update to 1/1
     await waitFor(() => {
-      expect(screen.getByText(/Current: 1/i)).toBeInTheDocument();
-      expect(screen.getByText(/Best: 1/i)).toBeInTheDocument();
+      expect(screen.getByTestId('current-streak')).toHaveTextContent('1');
+      expect(screen.getByTestId('best-streak')).toHaveTextContent('1');
     });
   });
 
@@ -348,8 +346,8 @@ describe('Streak Updates on Guesses (Integration)', () => {
     render(<GameContainer />);
 
     // After an incorrect guess, current should be 0 but best should remain 5
-    expect(screen.getByText(/Current: 0/i)).toBeInTheDocument();
-    expect(screen.getByText(/Best: 5/i)).toBeInTheDocument();
+    expect(screen.getByTestId('current-streak')).toHaveTextContent('0');
+    expect(screen.getByTestId('best-streak')).toHaveTextContent('5');
   });
 
   it('should update best streak when current exceeds it', async () => {
@@ -362,7 +360,7 @@ describe('Streak Updates on Guesses (Integration)', () => {
     render(<GameContainer />);
 
     // Initially 0/0
-    expect(screen.getByText(/Best: 0/i)).toBeInTheDocument();
+    expect(screen.getByTestId('best-streak')).toHaveTextContent('0');
 
     // Make a correct guess
     const correctButton = screen.getByRole('button', {
@@ -374,7 +372,7 @@ describe('Streak Updates on Guesses (Integration)', () => {
 
     // Best should now be 1
     await waitFor(() => {
-      expect(screen.getByText(/Best: 1/i)).toBeInTheDocument();
+      expect(screen.getByTestId('best-streak')).toHaveTextContent('1');
     });
   });
 
@@ -392,8 +390,8 @@ describe('Streak Updates on Guesses (Integration)', () => {
     render(<GameContainer />);
 
     // Should show current 5, best 10
-    expect(screen.getByText(/Current: 5/i)).toBeInTheDocument();
-    expect(screen.getByText(/Best: 10/i)).toBeInTheDocument();
+    expect(screen.getByTestId('current-streak')).toHaveTextContent('5');
+    expect(screen.getByTestId('best-streak')).toHaveTextContent('10');
   });
 });
 
@@ -422,8 +420,8 @@ describe('Streak Persistence (Integration)', () => {
 
     // Wait for streak to update to 1/1
     await waitFor(() => {
-      expect(screen.getByText(/Current: 1/i)).toBeInTheDocument();
-      expect(screen.getByText(/Best: 1/i)).toBeInTheDocument();
+      expect(screen.getByTestId('current-streak')).toHaveTextContent('1');
+      expect(screen.getByTestId('best-streak')).toHaveTextContent('1');
     });
 
     // Unmount and re-render (simulate page reload)
@@ -432,8 +430,8 @@ describe('Streak Persistence (Integration)', () => {
     render(<GameContainer />);
 
     // Should still show 1/1
-    expect(screen.getByText(/Current: 1/i)).toBeInTheDocument();
-    expect(screen.getByText(/Best: 1/i)).toBeInTheDocument();
+    expect(screen.getByTestId('current-streak')).toHaveTextContent('1');
+    expect(screen.getByTestId('best-streak')).toHaveTextContent('1');
   });
 
   it('should load streak from localStorage on component mount', () => {
@@ -449,8 +447,8 @@ describe('Streak Persistence (Integration)', () => {
     render(<GameContainer />);
 
     // Should load persisted state
-    expect(screen.getByText(/Current: 7/i)).toBeInTheDocument();
-    expect(screen.getByText(/Best: 15/i)).toBeInTheDocument();
+    expect(screen.getByTestId('current-streak')).toHaveTextContent('7');
+    expect(screen.getByTestId('best-streak')).toHaveTextContent('15');
   });
 });
 
@@ -479,7 +477,7 @@ describe('Consecutive Day Streaks (Integration)', () => {
 
     // Use getByText after click - no async needed since state updates are synchronous
     expect(screen.getByText(/correct/i)).toBeInTheDocument();
-    expect(screen.getByText(/Current: 1/i)).toBeInTheDocument();
+    expect(screen.getByTestId('current-streak')).toHaveTextContent('1');
 
     unmount1();
 
@@ -496,8 +494,8 @@ describe('Consecutive Day Streaks (Integration)', () => {
 
     // Streak should now be 2
     expect(screen.getByText(/correct/i)).toBeInTheDocument();
-    expect(screen.getByText(/Current: 2/i)).toBeInTheDocument();
-    expect(screen.getByText(/Best: 2/i)).toBeInTheDocument();
+    expect(screen.getByTestId('current-streak')).toHaveTextContent('2');
+    expect(screen.getByTestId('best-streak')).toHaveTextContent('2');
 
     unmount2();
   });
@@ -515,7 +513,7 @@ describe('Consecutive Day Streaks (Integration)', () => {
     fireEvent.click(correctButton1);
 
     expect(screen.getByText(/correct/i)).toBeInTheDocument();
-    expect(screen.getByText(/Current: 1/i)).toBeInTheDocument();
+    expect(screen.getByTestId('current-streak')).toHaveTextContent('1');
 
     unmount1();
 
@@ -532,7 +530,7 @@ describe('Consecutive Day Streaks (Integration)', () => {
 
     // Streak should reset to 1 (not 2)
     expect(screen.getByText(/correct/i)).toBeInTheDocument();
-    expect(screen.getByText(/Current: 1/i)).toBeInTheDocument();
+    expect(screen.getByTestId('current-streak')).toHaveTextContent('1');
 
     unmount2();
   });
@@ -560,8 +558,8 @@ describe('Consecutive Day Streaks (Integration)', () => {
     render(<GameContainer />);
 
     // Should still show 3, not increment
-    expect(screen.getByText(/Current: 3/i)).toBeInTheDocument();
-    expect(screen.getByText(/Best: 5/i)).toBeInTheDocument();
+    expect(screen.getByTestId('current-streak')).toHaveTextContent('3');
+    expect(screen.getByTestId('best-streak')).toHaveTextContent('5');
 
     // Buttons should not be available (already guessed)
     const realButton = screen.queryByRole('button', { name: /real/i });
@@ -585,7 +583,7 @@ describe('Streak Display Integration', () => {
     render(<GameContainer />);
 
     // Initially 0/0
-    expect(screen.getByText(/Current: 0/i)).toBeInTheDocument();
+    expect(screen.getByTestId('current-streak')).toHaveTextContent('0');
 
     // Make a correct guess
     const correctButton = screen.getByRole('button', {
@@ -597,8 +595,8 @@ describe('Streak Display Integration', () => {
 
     // Display should immediately update to 1/1
     await waitFor(() => {
-      expect(screen.getByText(/Current: 1/i)).toBeInTheDocument();
-      expect(screen.getByText(/Best: 1/i)).toBeInTheDocument();
+      expect(screen.getByTestId('current-streak')).toHaveTextContent('1');
+      expect(screen.getByTestId('best-streak')).toHaveTextContent('1');
     });
   });
 
@@ -620,7 +618,7 @@ describe('Streak Display Integration', () => {
     render(<GameContainer />);
 
     // Should show 2/2 with no color
-    expect(screen.getByText(/Current: 2/i)).toBeInTheDocument();
+    expect(screen.getByTestId('current-streak')).toHaveTextContent('2');
 
     // Make a correct guess to reach 3
     const correctButton = screen.getByRole('button', {
@@ -630,13 +628,9 @@ describe('Streak Display Integration', () => {
 
     // Should show 3/3 and have milestone color applied
     expect(screen.getByText(/correct/i)).toBeInTheDocument();
-    expect(screen.getByText(/Current: 3/i)).toBeInTheDocument();
-    const streakDisplays = screen.getAllByRole('status');
-    // Find the one with the streak text
-    const streakDisplay = streakDisplays.find(el => el.textContent?.includes('Current: 3'));
-    expect(streakDisplay).toBeDefined();
-    // Milestone 3 should have text-blue-500 color
-    expect(streakDisplay).toHaveClass('text-blue-500');
+    expect(screen.getByTestId('current-streak')).toHaveTextContent('3');
+    // Milestone 3 should have text-blue-500 color - check the parent streak-display
+    expect(screen.getByTestId("streak-display")).toHaveClass('text-blue-500');
 
     vi.useRealTimers();
   });
