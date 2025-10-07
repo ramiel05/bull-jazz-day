@@ -30,14 +30,16 @@ export default function GameContainer() {
   // Show loading state while initializing
   if (!dailyChallenge || !gameState) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-8">
+      <div className="min-h-screen flex items-center justify-center p-4 sm:p-8 bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
         <main className="w-full max-w-4xl" role="main" aria-label="International Day Guessing Game">
-          <div className="mb-6">
-            <StreakDisplay
-              currentStreak={streakState.currentStreak}
-              bestStreak={streakState.bestStreak}
-              milestoneColor={streakState.currentMilestoneColor}
-            />
+          <div className="mb-8 flex justify-center animate-fade-in">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg px-8 py-4 border border-slate-200 dark:border-slate-700">
+              <StreakDisplay
+                currentStreak={streakState.currentStreak}
+                bestStreak={streakState.bestStreak}
+                milestoneColor={streakState.currentMilestoneColor}
+              />
+            </div>
           </div>
         </main>
       </div>
@@ -50,22 +52,24 @@ export default function GameContainer() {
     : null;
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-8">
+    <div className="min-h-screen flex items-center justify-center p-4 sm:p-8 bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       <main className="w-full max-w-4xl" role="main" aria-label="International Day Guessing Game">
-        <div className="mb-6">
-          <StreakDisplay
-            currentStreak={streakState.currentStreak}
-            bestStreak={streakState.bestStreak}
-            milestoneColor={streakState.currentMilestoneColor}
-          />
+        <div className="mb-8 flex justify-center animate-fade-in">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg px-8 py-4 border border-slate-200 dark:border-slate-700">
+            <StreakDisplay
+              currentStreak={streakState.currentStreak}
+              bestStreak={streakState.bestStreak}
+              milestoneColor={streakState.currentMilestoneColor}
+            />
+          </div>
         </div>
         {!hasGuessed ? (
-          <div className="space-y-8">
+          <div className="space-y-10 animate-fade-in">
             <DayDisplay dayName={dailyChallenge.internationalDay.name} />
             <GuessButtons onGuess={handleGuess} disabled={false} />
           </div>
         ) : (
-          result && <FeedbackPanel result={result} />
+          result && <div className="animate-fade-in"><FeedbackPanel result={result} /></div>
         )}
       </main>
     </div>

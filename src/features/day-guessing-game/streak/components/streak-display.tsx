@@ -73,11 +73,18 @@ export function StreakDisplay({
     <div
       role="status"
       aria-live="polite"
-      className={`streak-display ${colorClass} font-semibold transition-colors duration-2000`}
+      className={`streak-display font-bold transition-colors duration-2000 text-lg sm:text-xl`}
     >
-      <div className="flex gap-4">
-        <span>Current: {currentStreak}</span>
-        <span>Best: {bestStreak}</span>
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 items-center">
+        <div className="flex items-center gap-2">
+          <span className="text-slate-600 dark:text-slate-400">🔥 Current:</span>
+          <span className={`text-2xl sm:text-3xl ${colorClass}`}>{currentStreak}</span>
+        </div>
+        <div className="hidden sm:block text-slate-400 dark:text-slate-600">|</div>
+        <div className="flex items-center gap-2">
+          <span className="text-slate-600 dark:text-slate-400">⭐ Best:</span>
+          <span className={`text-2xl sm:text-3xl ${colorClass}`}>{bestStreak}</span>
+        </div>
       </div>
     </div>
   );
