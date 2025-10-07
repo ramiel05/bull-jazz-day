@@ -5,10 +5,10 @@
  * Handles localStorage persistence for streak state.
  */
 
-import type { StreakState } from '~/features/day-guessing-game/streak/types/streak-types';
-import { initialStreakState } from '~/features/day-guessing-game/streak/types/streak-types';
+import type { StreakState } from "~/features/day-guessing-game/streak/types/streak-types";
+import { initialStreakState } from "~/features/day-guessing-game/streak/types/streak-types";
 
-const STORAGE_KEY = 'streak-state';
+const STORAGE_KEY = "streak-state";
 
 /**
  * Gets the streak state from localStorage
@@ -25,18 +25,18 @@ export function getStreakState(): StreakState {
       // Validate parsed state is an object with all required properties
       if (
         parsedState &&
-        typeof parsedState === 'object' &&
-        'currentStreak' in parsedState &&
-        'bestStreak' in parsedState &&
-        'currentMilestoneColor' in parsedState &&
-        'lastGuessDate' in parsedState
+        typeof parsedState === "object" &&
+        "currentStreak" in parsedState &&
+        "bestStreak" in parsedState &&
+        "currentMilestoneColor" in parsedState &&
+        "lastGuessDate" in parsedState
       ) {
         return parsedState as StreakState;
       }
     }
   } catch (error) {
     // Handle corrupted JSON or other errors
-    console.error('Error reading streak state from localStorage:', error);
+    console.error("Error reading streak state from localStorage:", error);
   }
 
   // Return fresh state if not found or corrupted
@@ -52,6 +52,6 @@ export function saveStreakState(state: StreakState): void {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch (error) {
     // Handle quota exceeded or other errors
-    console.error('Error writing streak state to localStorage:', error);
+    console.error("Error writing streak state to localStorage:", error);
   }
 }

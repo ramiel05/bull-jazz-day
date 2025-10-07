@@ -10,8 +10,12 @@
 import { useState, useCallback, useEffect } from "react";
 import invariant from "tiny-invariant";
 import type { StreakState } from "~/features/day-guessing-game/streak/types/streak-types";
+import { initialStreakState } from "~/features/day-guessing-game/streak/types/streak-types";
 import { getMilestoneColor } from "~/features/day-guessing-game/streak/utils/get-milestone-color";
-import { getStreakState, saveStreakState } from "~/features/day-guessing-game/streak/storage/streak-storage";
+import {
+  getStreakState,
+  saveStreakState,
+} from "~/features/day-guessing-game/streak/storage/streak-storage";
 
 /**
  * Hook return type
@@ -54,15 +58,22 @@ function daysBetween(date1: string, date2: string): number {
  * recordIncorrectGuess('2025-10-07');
  */
 export function useStreakCounter(): UseStreakCounterReturn {
-  const [streakState, setStreakState] = useState<StreakState>(() => {
-    // Load from localStorage on mount
-    return getStreakState();
-  });
+  const [streakState, setStreakState] =
+    useState<StreakState>(initialStreakState);
+  const [isHydrated, setIsHydrated] = useState(false);
 
-  // Save to localStorage whenever state changes
+  // Load from localStorage after hydration
   useEffect(() => {
-    saveStreakState(streakState);
-  }, [streakState]);
+    setStreakState(getStreakState());
+    setIsHydrated(true);
+  }, []);
+
+  // Save to localStorage whenever state changes (but only after hydration)
+  useEffect(() => {
+    if (isHydrated) {
+      saveStreakState(streakState);
+    }
+  }, [streakState, isHydrated]);
 
   const recordCorrectGuess = useCallback((guessDate: string) => {
     setStreakState((prevState) => {
@@ -92,7 +103,10 @@ export function useStreakCounter(): UseStreakCounterReturn {
       const newMilestoneColor = getMilestoneColor(newCurrentStreak);
 
       // Validate invariants
-      invariant(newCurrentStreak >= 0, "Streak cannot be negative after increment");
+      invariant(
+        newCurrentStreak >= 0,
+        "Streak cannot be negative after increment"
+      );
       invariant(
         newBestStreak >= newCurrentStreak,
         "Best streak must be >= current streak"
