@@ -4,15 +4,17 @@
  */
 
 /**
- * Represents the current session's streak tracking data.
+ * Represents the streak tracking data (persisted in localStorage).
  */
 export type StreakState = {
-  /** Consecutive correct guesses in current run (resets to 0 on incorrect guess) */
+  /** Consecutive calendar days with correct guesses (resets to 0 on incorrect guess or skipped day) */
   currentStreak: number;
-  /** Highest streak achieved in current session (never decreases, resets on session start) */
+  /** Highest streak achieved ever (never decreases, persisted across sessions) */
   bestStreak: number;
   /** CSS class string for milestone color, or null if no milestone reached */
   currentMilestoneColor: string | null;
+  /** Date of most recent guess in YYYY-MM-DD format, or null if never guessed */
+  lastGuessDate: string | null;
 };
 
 /**
@@ -44,4 +46,5 @@ export const initialStreakState: StreakState = {
   currentStreak: 0,
   bestStreak: 0,
   currentMilestoneColor: null,
+  lastGuessDate: null,
 };

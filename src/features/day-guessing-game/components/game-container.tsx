@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import DayDisplay from './day-display';
 import GuessButtons from './guess-buttons';
 import FeedbackPanel from './feedback-panel';
@@ -11,7 +10,7 @@ import { useDailyState } from '~/features/day-guessing-game/daily-challenge/hook
 
 export default function GameContainer() {
   const { dailyChallenge, gameState, submitGuess } = useDailyState();
-  const { streakState, incrementStreak, resetStreak } = useStreakCounter();
+  const { streakState, recordCorrectGuess, recordIncorrectGuess } = useStreakCounter();
 
   const handleGuess = (guessedReal: boolean) => {
     if (!dailyChallenge) return;
@@ -19,12 +18,12 @@ export default function GameContainer() {
     // Submit the guess through daily state hook
     submitGuess(guessedReal);
 
-    // Update streak based on result
+    // Update streak based on result, using the daily challenge date
     const result = validateGuess(dailyChallenge.internationalDay, guessedReal);
     if (result.correct) {
-      incrementStreak();
+      recordCorrectGuess(dailyChallenge.date);
     } else {
-      resetStreak();
+      recordIncorrectGuess(dailyChallenge.date);
     }
   };
 
