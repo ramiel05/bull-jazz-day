@@ -1,13 +1,16 @@
 'use client';
 
 import type { GuessResult } from '~/features/day-guessing-game/types/game-types';
+import type { StreakState } from '~/features/day-guessing-game/streak/types/streak-types';
 import CountdownTimer from './countdown-timer';
+import ShareButton from './share-button';
 
 type FeedbackPanelProps = {
   result: GuessResult;
+  streakState: StreakState;
 };
 
-export default function FeedbackPanel({ result }: FeedbackPanelProps) {
+export default function FeedbackPanel({ result, streakState }: FeedbackPanelProps) {
   const { correct, day } = result;
 
   return (
@@ -61,6 +64,10 @@ export default function FeedbackPanel({ result }: FeedbackPanelProps) {
             </p>
           )}
         </div>
+      </div>
+
+      <div className="flex justify-center">
+        <ShareButton guessResult={result} streakState={streakState} />
       </div>
 
       <div className="text-center p-8 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950 dark:to-purple-950 rounded-3xl shadow-xl border-2 border-indigo-200 dark:border-indigo-800">

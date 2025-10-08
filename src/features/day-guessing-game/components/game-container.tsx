@@ -69,7 +69,7 @@ export default function GameContainer() {
             <GuessButtons onGuess={handleGuess} disabled={false} />
           </div>
         ) : (
-          result && <div className="animate-fade-in"><FeedbackPanel result={result} /></div>
+          result && <div className="animate-fade-in"><FeedbackPanel result={result} streakState={streakState} /></div>
         )}
       </main>
     </div>
