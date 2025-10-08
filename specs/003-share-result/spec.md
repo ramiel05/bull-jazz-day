@@ -83,15 +83,15 @@ _Write scenarios that can be directly converted to tests (support TDD)_
 
 2. **Given** a player has made an incorrect guess, **When** they click the share button in the feedback display, **Then** a formatted message is copied to their clipboard containing: the day name, correct real/fake designation, their incorrect guess, failure emoji, and production site link. Streak information is omitted (as streak resets to 0 on incorrect guess).
 
-7. **Given** a player with streak of 0 clicks the share button, **When** the message is copied, **Then** the shared message omits all streak information (no "Streak: 0" displayed)
+3. **Given** a player with streak of 0 clicks the share button, **When** the message is copied, **Then** the shared message omits all streak information (no "Streak: 0" displayed)
 
-3. **Given** a player achieves a milestone on their current guess, **When** they click the share button, **Then** the copied message includes the milestone achievement with celebratory emoji
+4. **Given** a player achieves a milestone on their current guess, **When** they click the share button, **Then** the copied message includes the milestone achievement with celebratory emoji
 
-4. **Given** a player achieves a new best streak on their current guess, **When** they click the share button, **Then** the copied message includes the new best streak information with celebratory emoji
+5. **Given** a player achieves a new best streak on their current guess, **When** they click the share button, **Then** the copied message includes the new best streak information with celebratory emoji
 
-5. **Given** the share button has been clicked, **When** the copy operation completes successfully, **Then** there is visual feedback to the user that the copy succeeded in the form of button text changing to "Copied!"
+6. **Given** the share button has been clicked, **When** the copy operation completes successfully, **Then** there is visual feedback to the user that the copy succeeded in the form of button text changing to "Copied!"
 
-6. **Given** the share button has been clicked, **When** the copy operation fails (clipboard API unavailable or permission denied), **Then** the button text changes to "Copy failed" for 5 seconds before reverting to the original text
+7. **Given** the share button has been clicked, **When** the copy operation fails (clipboard API unavailable or permission denied), **Then** the button text changes to "Copy failed" for 5 seconds before reverting to the original text
 
 ### Edge Cases
 
