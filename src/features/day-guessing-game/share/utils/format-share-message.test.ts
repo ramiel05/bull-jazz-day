@@ -180,4 +180,52 @@ describe('formatShareMessage', () => {
     expect(result).toContain('Current streak: 1');
     expect(result).toContain('🔗 https://bull-jazz-day.vercel.app');
   });
+
+  // Gap 8: Whitespace-only day names
+  it('should throw error when dayName is only whitespace', () => {
+    const data: ShareMessageData = {
+      dayName: '   ',
+      dayType: 'real',
+      playerGuess: 'real',
+      isCorrect: true,
+      currentStreak: 1,
+      milestoneText: null,
+      newBestText: null,
+    };
+
+    expect(() => formatShareMessage(data)).toThrow();
+  });
+
+  it('should throw error when dayName is only tabs and newlines', () => {
+    const data: ShareMessageData = {
+      dayName: '\t\n\t',
+      dayType: 'real',
+      playerGuess: 'real',
+      isCorrect: true,
+      currentStreak: 1,
+      milestoneText: null,
+      newBestText: null,
+    };
+
+    expect(() => formatShareMessage(data)).toThrow();
+  });
+
+  // Gap 9: Long day name validation
+  it('should handle very long day names without truncation', () => {
+    const longDayName = 'A'.repeat(150); // 150 character day name
+    const data: ShareMessageData = {
+      dayName: longDayName,
+      dayType: 'real',
+      playerGuess: 'real',
+      isCorrect: true,
+      currentStreak: 5,
+      milestoneText: null,
+      newBestText: null,
+    };
+
+    const result = formatShareMessage(data);
+
+    expect(result).toContain(longDayName);
+    expect(result).toContain('🔗 https://bull-jazz-day.vercel.app');
+  });
 });

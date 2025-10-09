@@ -13,7 +13,7 @@ const PRODUCTION_URL = 'https://bull-jazz-day.vercel.app';
  */
 export function formatShareMessage(data: ShareMessageData): string {
   // Precondition checks
-  invariant(data.dayName.length > 0, 'dayName must not be empty');
+  invariant(data.dayName.trim().length > 0, 'dayName must not be empty');
   invariant(data.currentStreak >= 0, 'currentStreak must be non-negative');
 
   const { dayName, dayType, playerGuess, isCorrect, currentStreak, milestoneText, newBestText } = data;

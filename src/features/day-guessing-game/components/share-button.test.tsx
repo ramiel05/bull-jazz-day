@@ -257,4 +257,79 @@ describe('ShareButton', () => {
     const button = screen.getByRole('button', { name: /share/i });
     expect(button).toHaveAttribute('aria-label');
   });
+
+  // Gap 6: Accessibility state transitions
+  it('should update aria-label when button state changes to copied', async () => {
+    const { copyToClipboard } = await import('~/features/day-guessing-game/share/utils/copy-to-clipboard');
+    vi.mocked(copyToClipboard).mockResolvedValue();
+
+    const user = userEvent.setup();
+    const guessResult = createMockGuessResult(true, true);
+    const streakState = createMockStreakState(0, 0);
+
+    render(<ShareButton guessResult={guessResult} streakState={streakState} />);
+
+    const button = screen.getByRole('button', { name: /share/i });
+    expect(button).toHaveAttribute('aria-label', 'Share your result');
+
+    await user.click(button);
+
+    await waitFor(() => {
+      const copiedButton = screen.getByRole('button', { name: /copied/i });
+      expect(copiedButton).toHaveAttribute('aria-label', 'Result copied to clipboard');
+    });
+  });
+
+  it('should update aria-label when button state changes to failed', async () => {
+    const { copyToClipboard } = await import('~/features/day-guessing-game/share/utils/copy-to-clipboard');
+    vi.mocked(copyToClipboard).mockRejectedValue(new Error('Permission denied'));
+
+    const user = userEvent.setup();
+    const guessResult = createMockGuessResult(true, true);
+    const streakState = createMockStreakState(0, 0);
+
+    render(<ShareButton guessResult={guessResult} streakState={streakState} />);
+
+    await user.click(screen.getByRole('button', { name: /share/i }));
+
+    await waitFor(() => {
+      const failedButton = screen.getByRole('button', { name: /failed to copy result/i });
+      expect(failedButton).toHaveAttribute('aria-label', 'Failed to copy result');
+    });
+  });
+
+  // Gap 7: Timeout cleanup on unmount (fixing mislabeled test)
+  it('should cleanup timeout when component unmounts before revert', async () => {
+    const { copyToClipboard } = await import('~/features/day-guessing-game/share/utils/copy-to-clipboard');
+    vi.mocked(copyToClipboard).mockResolvedValue();
+
+    vi.useFakeTimers();
+
+    const guessResult = createMockGuessResult(true, true);
+    const streakState = createMockStreakState(0, 0);
+
+    const { unmount } = render(<ShareButton guessResult={guessResult} streakState={streakState} />);
+
+    // Click button to trigger copy
+    const button = screen.getByRole('button', { name: /share/i });
+    fireEvent.click(button);
+
+    await act(async () => {
+      await vi.runOnlyPendingTimersAsync();
+    });
+
+    // Verify "Copied!" is showing
+    expect(screen.getByRole('button', { name: /copied/i })).toBeInTheDocument();
+
+    // Unmount before timeout completes
+    unmount();
+
+    // Advance timers past the 5-second revert timeout
+    await act(async () => {
+      vi.advanceTimersByTime(5000);
+    });
+
+    // No error should occur from trying to update unmounted component
+    // (This test passes if no error is thrown)
+  });
 });
