@@ -350,6 +350,26 @@ describe('Streak Updates on Guesses (Integration)', () => {
     expect(screen.getByTestId('best-streak')).toHaveTextContent('5');
   });
 
+  it('should show "Incorrect!" feedback when user guesses wrong', async () => {
+    const user = userEvent.setup();
+
+    // Get the daily challenge to know the correct answer
+    const challenge = getDailyChallenge(new Intl.DateTimeFormat('sv-SE').format(new Date()));
+    const correctAnswer = challenge.internationalDay.isReal;
+
+    render(<GameContainer />);
+
+    // Click the WRONG button (opposite of the correct answer)
+    const wrongButton = screen.getByRole('button', {
+      name: correctAnswer ? /fake/i : /real/i,
+    });
+    await user.click(wrongButton);
+
+    // Should see "Incorrect!" feedback (not "Correct!")
+    await screen.findByText(/incorrect/i);
+    expect(screen.queryByText(/^correct!$/i)).not.toBeInTheDocument();
+  });
+
   it('should update best streak when current exceeds it', async () => {
     const user = userEvent.setup();
 
