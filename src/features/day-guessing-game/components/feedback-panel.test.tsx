@@ -150,4 +150,47 @@ describe('FeedbackPanel', () => {
       expect(screen.getByTestId('share-button')).toBeInTheDocument();
     });
   });
+
+  // Gap 3: Comprehensive fake day feedback scenarios
+  describe('Fake day feedback scenarios', () => {
+    it('should show "This is a fake international day" when correct guess on fake day', () => {
+      const result: GuessResult = { correct: true, day: fakeDay };
+
+      render(<FeedbackPanel result={result} streakState={mockStreakState} />);
+
+      expect(screen.getByText(/correct/i)).toBeInTheDocument();
+      expect(screen.getByText(/this is a fake international day/i)).toBeInTheDocument();
+      expect(screen.getByText(fakeDay.description)).toBeInTheDocument();
+    });
+
+    it('should show "This is a fake international day" when incorrect guess on fake day', () => {
+      const result: GuessResult = { correct: false, day: fakeDay };
+
+      render(<FeedbackPanel result={result} streakState={mockStreakState} />);
+
+      expect(screen.getByText(/incorrect/i)).toBeInTheDocument();
+      expect(screen.getByText(/this is a fake international day/i)).toBeInTheDocument();
+      expect(screen.getByText(fakeDay.description)).toBeInTheDocument();
+    });
+
+    it('should show "This is a real international day" when correct guess on real day', () => {
+      const result: GuessResult = { correct: true, day: realDay };
+
+      render(<FeedbackPanel result={result} streakState={mockStreakState} />);
+
+      expect(screen.getByText(/correct/i)).toBeInTheDocument();
+      expect(screen.getByText(/this is a real international day/i)).toBeInTheDocument();
+      expect(screen.getByText(realDay.description)).toBeInTheDocument();
+    });
+
+    it('should show "This is a real international day" when incorrect guess on real day', () => {
+      const result: GuessResult = { correct: false, day: realDay };
+
+      render(<FeedbackPanel result={result} streakState={mockStreakState} />);
+
+      expect(screen.getByText(/incorrect/i)).toBeInTheDocument();
+      expect(screen.getByText(/this is a real international day/i)).toBeInTheDocument();
+      expect(screen.getByText(realDay.description)).toBeInTheDocument();
+    });
+  });
 });
