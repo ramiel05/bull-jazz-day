@@ -13,6 +13,7 @@ describe('getDailyState', () => {
     expect(state).toEqual({
       date: currentDate,
       guessedCorrectly: null,
+      guessedReal: null,
       timestamp: expect.any(Number),
     });
   });
@@ -22,6 +23,7 @@ describe('getDailyState', () => {
     const storedState = {
       date: currentDate,
       guessedCorrectly: true,
+      guessedReal: true,
       timestamp: Date.now(),
     };
 
@@ -36,6 +38,7 @@ describe('getDailyState', () => {
     const storedState = {
       date: '2025-10-04',
       guessedCorrectly: true,
+      guessedReal: true,
       timestamp: Date.now() - 86400000, // Yesterday's timestamp
     };
 
@@ -58,6 +61,7 @@ describe('getDailyState', () => {
     expect(state).toEqual({
       date: currentDate,
       guessedCorrectly: null,
+      guessedReal: null,
       timestamp: expect.any(Number),
     });
   });
@@ -71,6 +75,7 @@ describe('getDailyState', () => {
     expect(state).toEqual({
       date: currentDate,
       guessedCorrectly: null,
+      guessedReal: null,
       timestamp: expect.any(Number),
     });
   });
@@ -93,6 +98,7 @@ describe('getDailyState', () => {
     const storedState = {
       date: currentDate,
       guessedCorrectly: false,
+      guessedReal: false,
       timestamp: Date.now(),
     };
 
@@ -125,6 +131,7 @@ describe('saveDailyState', () => {
     const state = {
       date: '2025-10-05',
       guessedCorrectly: true,
+      guessedReal: true,
       timestamp: Date.now(),
     };
 
@@ -139,12 +146,14 @@ describe('saveDailyState', () => {
     const oldState = {
       date: '2025-10-04',
       guessedCorrectly: false,
+      guessedReal: false,
       timestamp: 1000,
     };
 
     const newState = {
       date: '2025-10-05',
       guessedCorrectly: true,
+      guessedReal: true,
       timestamp: 2000,
     };
 
@@ -160,6 +169,7 @@ describe('saveDailyState', () => {
     const state = {
       date: '2025-10-05',
       guessedCorrectly: null,
+      guessedReal: null,
       timestamp: Date.now(),
     };
 
@@ -175,6 +185,7 @@ describe('saveDailyState', () => {
     const state = {
       date: '2025-10-05',
       guessedCorrectly: false,
+      guessedReal: false,
       timestamp: Date.now(),
     };
 
@@ -196,6 +207,7 @@ describe('saveDailyState', () => {
     const state = {
       date: '2025-10-05',
       guessedCorrectly: true,
+      guessedReal: true,
       timestamp: Date.now(),
     };
 
@@ -211,6 +223,7 @@ describe('saveDailyState', () => {
     const state = {
       date: '2025-10-05',
       guessedCorrectly: true,
+      guessedReal: true,
       timestamp,
     };
 
@@ -234,6 +247,7 @@ describe('getDailyState and saveDailyState integration', () => {
     const state = {
       date: currentDate,
       guessedCorrectly: true,
+      guessedReal: true,
       timestamp: Date.now(),
     };
 
@@ -248,6 +262,7 @@ describe('getDailyState and saveDailyState integration', () => {
     const yesterdayState = {
       date: '2025-10-04',
       guessedCorrectly: true,
+      guessedReal: true,
       timestamp: Date.now(),
     };
 

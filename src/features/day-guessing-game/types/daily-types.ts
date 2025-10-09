@@ -9,5 +9,6 @@ export type DailyChallenge = {
 export type DailyGameState = {
   date: string; // YYYY-MM-DD
   guessedCorrectly: boolean | null;
+  guessedReal: boolean | null; // What the user guessed (real or fake)
   timestamp: number; // Unix timestamp
 };

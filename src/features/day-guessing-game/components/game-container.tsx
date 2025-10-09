@@ -47,8 +47,8 @@ export default function GameContainer() {
   }
 
   const hasGuessed = gameState.guessedCorrectly !== null;
-  const result = hasGuessed
-    ? validateGuess(dailyChallenge.internationalDay, dailyChallenge.internationalDay.isReal)
+  const result = hasGuessed && gameState.guessedReal !== null
+    ? validateGuess(dailyChallenge.internationalDay, gameState.guessedReal)
     : null;
 
   return (

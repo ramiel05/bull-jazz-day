@@ -34,6 +34,7 @@ export function getDailyState(currentDate: string): DailyGameState {
   return {
     date: currentDate,
     guessedCorrectly: null,
+    guessedReal: null,
     timestamp: Date.now(),
   };
 }

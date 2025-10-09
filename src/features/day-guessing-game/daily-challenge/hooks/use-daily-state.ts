@@ -41,6 +41,7 @@ export function useDailyState() {
       setGameState({
         date: gameState.date,
         guessedCorrectly: isCorrect,
+        guessedReal,
         timestamp: Date.now(),
       });
     },
