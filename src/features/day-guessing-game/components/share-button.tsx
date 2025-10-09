@@ -88,18 +88,19 @@ export default function ShareButton({ guessResult, streakState }: ShareButtonPro
   }[buttonState];
 
   const buttonStyle = {
-    idle: 'bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600',
-    copied: 'bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600',
-    failed: 'bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600',
+    idle: 'bg-gradient-to-br from-indigo-500 to-indigo-600 shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40',
+    copied: 'bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40',
+    failed: 'bg-gradient-to-br from-red-500 to-red-600 shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40',
   }[buttonState];
 
   return (
     <button
       onClick={handleShare}
       aria-label={ariaLabel}
-      className={`${buttonStyle} text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg`}
+      className={`group relative ${buttonStyle} text-white font-bold px-10 py-5 text-lg rounded-2xl hover:scale-105 active:scale-95 transition-all duration-200`}
     >
-      {buttonText}
+      <span className="relative z-10">{buttonText}</span>
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
     </button>
   );
 }
