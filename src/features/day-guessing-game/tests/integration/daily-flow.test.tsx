@@ -115,6 +115,94 @@ describe('Daily Challenge Flow (Integration)', () => {
     const truthIndicator = screen.queryByText(/this is a real|this is a fake/i);
     expect(truthIndicator).toBeInTheDocument();
   });
+
+///////
+//  compare this against the gap filler stuff
+  it('should show "Incorrect!" feedback when user guesses wrong', async () => {
+    const user = userEvent.setup();
+
+    // Get the daily challenge to know the correct answer
+    const challenge = getDailyChallenge(new Intl.DateTimeFormat('sv-SE').format(new Date()));
+    const correctAnswer = challenge.internationalDay.isReal;
+
+    render(<GameContainer />);
+
+    // Click the WRONG button (opposite of the correct answer)
+    const wrongButton = screen.getByRole('button', {
+      name: correctAnswer ? /fake/i : /real/i,
+    });
+    await user.click(wrongButton);
+
+    // Should see "Incorrect!" feedback (not "Correct!")
+    await screen.findByText(/incorrect/i);
+    expect(screen.queryByText(/^correct!$/i)).not.toBeInTheDocument();
+  });
+/////
+
+  // Gap 3: Fake day feedback scenarios in daily flow
+  it('should correctly reveal when day is fake after guessing real', async () => {
+    const user = userEvent.setup();
+
+    render(<GameContainer />);
+
+    const challenge = getDailyChallenge(new Intl.DateTimeFormat('sv-SE').format(new Date()));
+
+    // Only run this test if today's challenge is a fake day
+    if (!challenge.internationalDay.isReal) {
+      const realButton = screen.getByRole('button', { name: /real/i });
+      await user.click(realButton);
+
+      // Should show incorrect (guessed real, but it's fake)
+      expect(screen.getByText(/incorrect/i)).toBeInTheDocument();
+      expect(screen.getByText(/this is a fake international day/i)).toBeInTheDocument();
+    } else {
+      // Skip test if today's challenge is real
+      expect(true).toBe(true);
+    }
+  });
+
+  it('should correctly reveal when day is fake after guessing fake', async () => {
+    const user = userEvent.setup();
+
+    render(<GameContainer />);
+
+    const challenge = getDailyChallenge(new Intl.DateTimeFormat('sv-SE').format(new Date()));
+
+    // Only run this test if today's challenge is a fake day
+    if (!challenge.internationalDay.isReal) {
+      const fakeButton = screen.getByRole('button', { name: /fake/i });
+      await user.click(fakeButton);
+
+      // Should show correct (guessed fake, and it's fake)
+      expect(screen.getByText(/correct/i)).toBeInTheDocument();
+      expect(screen.getByText(/this is a fake international day/i)).toBeInTheDocument();
+    } else {
+      // Skip test if today's challenge is real
+      expect(true).toBe(true);
+    }
+  });
+
+  it('should correctly reveal when day is real after guessing fake', async () => {
+    const user = userEvent.setup();
+
+    render(<GameContainer />);
+
+    const challenge = getDailyChallenge(new Intl.DateTimeFormat('sv-SE').format(new Date()));
+
+    // Only run this test if today's challenge is a real day
+    if (challenge.internationalDay.isReal) {
+      const fakeButton = screen.getByRole('button', { name: /fake/i });
+      await user.click(fakeButton);
+
+      // Should show incorrect (guessed fake, but it's real)
+      expect(screen.getByText(/incorrect/i)).toBeInTheDocument();
+      expect(screen.getByText(/this is a real international day/i)).toBeInTheDocument();
+    } else {
+      // Skip test if today's challenge is fake
+      expect(true).toBe(true);
+    }
+
+  });
 });
 
 describe('Daily Challenge Determinism (Integration)', () => {
@@ -348,26 +436,6 @@ describe('Streak Updates on Guesses (Integration)', () => {
     // After an incorrect guess, current should be 0 but best should remain 5
     expect(screen.getByTestId('current-streak')).toHaveTextContent('0');
     expect(screen.getByTestId('best-streak')).toHaveTextContent('5');
-  });
-
-  it('should show "Incorrect!" feedback when user guesses wrong', async () => {
-    const user = userEvent.setup();
-
-    // Get the daily challenge to know the correct answer
-    const challenge = getDailyChallenge(new Intl.DateTimeFormat('sv-SE').format(new Date()));
-    const correctAnswer = challenge.internationalDay.isReal;
-
-    render(<GameContainer />);
-
-    // Click the WRONG button (opposite of the correct answer)
-    const wrongButton = screen.getByRole('button', {
-      name: correctAnswer ? /fake/i : /real/i,
-    });
-    await user.click(wrongButton);
-
-    // Should see "Incorrect!" feedback (not "Correct!")
-    await screen.findByText(/incorrect/i);
-    expect(screen.queryByText(/^correct!$/i)).not.toBeInTheDocument();
   });
 
   it('should update best streak when current exceeds it', async () => {

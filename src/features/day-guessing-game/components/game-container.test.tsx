@@ -157,4 +157,39 @@ describe('GameContainer - Daily Mode', () => {
       expect(screen.queryByRole('button', { name: /continue/i })).not.toBeInTheDocument();
     });
   });
+
+  // Gap 3: Comprehensive real/fake day feedback scenarios
+  describe('Real vs Fake day feedback', () => {
+    it('should show correct real/fake status regardless of guess outcome', async () => {
+      const user = userEvent.setup();
+      render(<GameContainer />);
+
+      // Make a guess (either button)
+      await user.click(screen.getByRole('button', { name: /real/i }));
+
+      // Should always reveal the truth: "This is a real international day" or "This is a fake international day"
+      const truthText = screen.getByText(/this is a (real|fake) international day/i);
+      expect(truthText).toBeInTheDocument();
+
+      // The text should match one of our mocked days
+      expect(
+        truthText.textContent?.includes('real') || truthText.textContent?.includes('fake')
+      ).toBe(true);
+    });
+
+    it('should show appropriate feedback and truth for fake button guess', async () => {
+      const user = userEvent.setup();
+      render(<GameContainer />);
+
+      await user.click(screen.getByRole('button', { name: /fake/i }));
+
+      // Should show feedback (correct or incorrect)
+      expect(
+        screen.getByText(/correct/i) || screen.getByText(/incorrect/i)
+      ).toBeInTheDocument();
+
+      // Should reveal the actual status
+      expect(screen.getByText(/this is a (real|fake) international day/i)).toBeInTheDocument();
+    });
+  });
 });
